@@ -6,11 +6,11 @@ require 'son_jay/version'
 Gem::Specification.new do |spec|
   spec.name          = "son_jay"
   spec.version       = SonJay::VERSION
-  spec.authors       = ["TODO: Write your name"]
+  spec.authors       = ["Steve Jorgensen"]
   spec.email         = ["stevej@stevej.name"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = %q{Symmetrical transformation between structured data and JSON}
+  spec.description   = %q{Symmetrical transformation between structured data and JSON}
+  spec.homepage      = "https://github.com/stevecj/son_jay"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
