@@ -17,7 +17,7 @@ When(/^the model is serialized to JSON as:$/) do |code|
 end
 
 Then(/^the resulting JSON is equivalent to:$/) do |expected_json_equivalent|
-  expected_json = JSON.parse(expected_json_equivalent)
-  actual_json = context_data[:resulting_json]
-  expect( actual_json ).to eq( expected_json )
+  expected_data = JSON.parse( expected_json_equivalent )
+  actual_data = JSON.parse( context_data[:resulting_json] )
+  expect( actual_data ).to eq( expected_data )
 end

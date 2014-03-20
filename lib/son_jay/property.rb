@@ -7,6 +7,10 @@ module SonJay
       @name = name
     end
 
+    def as_json(*)
+      value
+    end
+
     class Specification
       attr_reader :name
 

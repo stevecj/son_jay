@@ -39,6 +39,23 @@ module SonJay
       _sonj_properties[name]
     end
 
+    # Returns a JSON representation of the model instance.
+    def to_json(*args)
+      as_json.to_json(*args)
+    end
+
+    # Returns a hash, that will be turned into a JSON representation of this model instance.
+    def as_json(*)
+      # Assuming (without actually knowing) that it is faster to
+      # duplicate a hash and replace existing values than to build
+      # a new hash.
+      data = _sonj_properties.dup
+      data.each_pair do |k,v|
+        data[k] = v.as_json
+      end
+      data
+    end
+
     private
 
     def _sonj_properties
