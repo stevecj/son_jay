@@ -5,8 +5,9 @@ module SonJay
       include Enumerable
 
       def property(name)
-        new_property = Property::Specification.new(name)
-        properties[new_property.name] = new_property
+        new_spec = Property::Specification.new(name)
+        properties[new_spec.name] = new_spec
+        new_spec.define_model_value_accessor self
       end
 
       def [](property_name)

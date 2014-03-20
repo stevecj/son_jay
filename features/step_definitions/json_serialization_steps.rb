@@ -9,10 +9,15 @@ When(/^the instance's property values are assigned as:$/) do |code|
   eval code
 end
 
-When(/^the model is serialized as:$/) do |code|
-  pending # express the regexp above with the code you wish you had
+When(/^the model is serialized to JSON as:$/) do |code|
+  instance = context_data[:instance]
+  json = nil
+  eval code
+  context_data[:resulting_json] = json
 end
 
-Then(/^the resulting JSON is equivalent to:$/) do |code|
-  pending # express the regexp above with the code you wish you had
+Then(/^the resulting JSON is equivalent to:$/) do |expected_json_equivalent|
+  expected_json = JSON.parse(expected_json_equivalent)
+  actual_json = context_data[:resulting_json]
+  expect( actual_json ).to eq( expected_json )
 end

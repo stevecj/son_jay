@@ -24,9 +24,9 @@ Feature: Serializing data to JSON
       instance.featured  =  false
       instance.owner     =  nil
       """
-    And the model is serialized as:
+    And the model is serialized to JSON as:
       """
-      json = instance
+      json = instance.to_json
       """
     Then the resulting JSON is equivalent to:
       """
