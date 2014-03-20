@@ -1,6 +1,11 @@
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
 
+desc "Run all specs and features"
+task all_tests: %w[spec cucumber cucumber:wip]
+
+task :default => :all_tests
+
 RSpec::Core::RakeTask.new(:spec)
 
 task :default => :spec
