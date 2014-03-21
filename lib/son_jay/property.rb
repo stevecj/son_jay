@@ -27,6 +27,9 @@ module SonJay
           def #{name}=(value)
             sonj_property(#{name.inspect}).value = value
           end
+          def #{name}
+            sonj_property(#{name.inspect}).value
+          end
         EOS
       end
     end

@@ -1,6 +1,5 @@
 Feature: Parsing JSON
 
-  @wip
   Scenario: Simple object data
     Given an object model defined as:
       """

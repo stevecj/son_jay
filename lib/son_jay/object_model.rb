@@ -4,6 +4,12 @@ module SonJay
     class << self
       include Enumerable
 
+      def json_create(json)
+        instance = new
+        instance.load_json(json)
+        instance
+      end
+
       def property(name)
         new_spec = Property::Specification.new(name)
         properties[new_spec.name] = new_spec
@@ -50,10 +56,21 @@ module SonJay
       # duplicate a hash and replace existing values than to build
       # a new hash.
       data = _sonj_properties.dup
-      data.each_pair do |k,v|
-        data[k] = v.as_json
+      data.each_pair do |k,p|
+        data[k] = p.as_json
       end
       data
+    end
+
+    def load_json(json)
+      data = JSON.parse(json)
+      load_data data
+    end
+
+    def load_data(data)
+      _sonj_properties.each do |k,p|
+        p.value = data.fetch(k)
+      end
     end
 
     private

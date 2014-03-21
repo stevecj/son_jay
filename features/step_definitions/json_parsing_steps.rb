@@ -12,6 +12,11 @@ When(/^the JSON is parsed to an object model instance as:$/) do |code|
 end
 
 Then(/^the instance property values are:$/) do |table|
-  # table is a Cucumber::Ast::Table
-  pending # express the regexp above with the code you wish you had
+  expected_prop_vals = table.hashes.first
+  instance = context_data[:instance]
+  expected_prop_vals.each do |property, expected_val_expr|
+    expected_val = eval(expected_val_expr)
+    actual_val = eval("instance.#{property}")
+    expect( actual_val ).to eq( expected_val )
+  end
 end

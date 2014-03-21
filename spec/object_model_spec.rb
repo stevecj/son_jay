@@ -62,5 +62,41 @@ describe SonJay::ObjectModel do
         expect( JSON.parse(actual_json) ).to eq( JSON.parse(expected_json_equiv) )
       end
     end
+
+    describe '#load_json' do
+      let( :subclass ){ Class.new(described_class) do
+        property :a
+        property :bb
+        property :ccc
+        property :dddd
+      end }
+
+      let( :instance ){ subclass.new }
+
+      it "fills in property values from a JSON object representation" do
+        json = <<-EOS
+          {
+            "a":"Content",
+            "bb":600,
+            "ccc":true,
+            "dddd":null
+          }
+        EOS
+
+        instance.load_json json
+
+        expect( [
+          instance.a ,
+          instance.bb ,
+          instance.ccc ,
+          instance.dddd ,
+        ] ).to eq( [
+          'Content',
+          600,
+          true,
+          nil
+        ] )
+      end
+    end
   end
 end
