@@ -37,3 +37,42 @@ Feature: Serializing data to JSON
           "owner"     :  null
       }
       """
+
+  @wip
+  Scenario: Composite object data
+    Given an object model defined as:
+      """
+      class CompositeObjectModel < SonJay::ObjectModel
+        property :ubername
+        property :component, model: ->{ ComponentObjectModel }
+      end
+      """
+    And an object model defined as:
+      """
+      class ComponentObjectModel < SonJay::ObjectModel
+        property :undername
+      end
+      """
+    And a model instance defined as:
+      """
+      instance = ComponentObjectModel.new
+      """
+    When the instance's property values are assigned as:
+      """
+      instance.ubername = 'Uber!'
+      instance.component.undername = '(under)'
+      """
+    And the model is serialized to JSON as:
+      """
+      json = instance.to_json
+      """
+    Then the resulting JSON is equivalent to:
+      """
+      {
+          "ubername" : "Uber!",
+          "component :
+              {
+                  "undername" : "(under)"
+              }
+      }
+      """
