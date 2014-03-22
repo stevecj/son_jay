@@ -38,13 +38,12 @@ Feature: Serializing data to JSON
       }
       """
 
-  @wip
   Scenario: Composite object data
     Given an object model defined as:
       """
       class CompositeObjectModel < SonJay::ObjectModel
         property :ubername
-        property :component, model: ->{ ComponentObjectModel }
+        property :component, object_model: ->{ ComponentObjectModel }
       end
       """
     And an object model defined as:
@@ -55,7 +54,7 @@ Feature: Serializing data to JSON
       """
     And a model instance defined as:
       """
-      instance = ComponentObjectModel.new
+      instance = CompositeObjectModel.new
       """
     When the instance's property values are assigned as:
       """
@@ -69,8 +68,8 @@ Feature: Serializing data to JSON
     Then the resulting JSON is equivalent to:
       """
       {
-          "ubername" : "Uber!",
-          "component :
+          "ubername"  : "Uber!",
+          "component" :
               {
                   "undername" : "(under)"
               }

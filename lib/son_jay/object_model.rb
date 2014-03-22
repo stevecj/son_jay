@@ -10,10 +10,17 @@ module SonJay
         instance
       end
 
-      def property(name)
-        new_spec = Property::Specification.new(name)
+      def property(name, options={})
+        new_spec = Properties::PropertySpecification.new(name, options)
         properties[new_spec.name] = new_spec
-        new_spec.define_model_value_accessor self
+        class_eval <<-EOS, __FILE__, __LINE__ + 1
+          def #{name}=(value)
+            sonj_property(#{name.inspect}).value = value
+          end
+          def #{name}
+            sonj_property(#{name.inspect}).value
+          end
+        EOS
       end
 
       def [](property_name)
