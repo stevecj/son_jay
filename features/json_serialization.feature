@@ -11,7 +11,7 @@ Feature: Serializing data to JSON
         property :owner
       end
       """
-    And a model instance defined as:
+    And a model instance constructed as:
       """
       instance = SimpleObjectModel.new
       """
@@ -52,7 +52,7 @@ Feature: Serializing data to JSON
         property :undername
       end
       """
-    And a model instance defined as:
+    And a model instance constructed as:
       """
       instance = CompositeObjectModel.new
       """
@@ -74,4 +74,30 @@ Feature: Serializing data to JSON
                   "undername" : "(under)"
               }
       }
+      """
+
+  @wip
+  Scenario: Simple array model
+    Given a model instance constructed as:
+      """
+      instance = ValueArray.new
+      """
+    When instance elements are added as:
+      """
+      instance << 1
+      instance.unshift 'abc'
+      instance.concat( [nil, true] )
+      """
+    And the model is serialized to JSON as:
+      """
+      json = instance.to_json
+      """
+    Then the resulting JSON is equivalent to:
+      """
+      [
+          "abc",
+          1,
+          null,
+          true
+      ]
       """

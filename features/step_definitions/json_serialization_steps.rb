@@ -1,9 +1,3 @@
-Given(/^a model instance defined as:$/) do |code|
-  instance = nil
-  context_module.module_eval(code)
-  context_data[:instance] = instance
-end
-
 When(/^the instance's property values are assigned as:$/) do |code|
   instance = context_data[:instance]
   eval code
@@ -20,4 +14,9 @@ Then(/^the resulting JSON is equivalent to:$/) do |expected_json_equivalent|
   expected_data = JSON.parse( expected_json_equivalent )
   actual_data = JSON.parse( context_data[:resulting_json] )
   expect( actual_data ).to eq( expected_data )
+end
+
+When(/^instance elements are added as:$/) do |string|
+  instance = context_data[:instance]
+  eval code
 end
