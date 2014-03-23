@@ -25,6 +25,10 @@ module SonJay
         value
       end
 
+      # Loads data from a hash/array/value structure.
+      def load_data(data)
+        raise NotImplementedError, "Subclass responsibility"
+      end
       
       private
 

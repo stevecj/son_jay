@@ -31,7 +31,6 @@ Feature: Parsing JSON
       | id  | name      | published | featured | owner |
       |  55 | "Polygon" |  true     |  false   |  nil  |
 
-  @wip
   Scenario: Composite object data
     Given an object model defined as:
       """

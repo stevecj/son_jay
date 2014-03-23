@@ -1,6 +1,8 @@
 module SonJay
   module Properties
     class ModeledObject < Properties::Property
+      extend Forwardable
+
       def value
         @value ||= model_class.new
       end
@@ -8,6 +10,10 @@ module SonJay
       def model_class
         @model_class ||= @model_class_getter.call
       end
+
+      def_delegators :value, *[
+        :load_data ,
+      ]
 
       private
 

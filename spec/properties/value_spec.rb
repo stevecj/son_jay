@@ -8,4 +8,9 @@ describe SonJay::Properties::Value do
     expect( subject.value ).to eq( :the_value )
   end
 
+  it "assigns data to its value using #load_data" do
+    subject.load_data :the_data
+    expect( subject.value ).to eq( :the_data )
+  end
+
 end

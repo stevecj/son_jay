@@ -76,7 +76,7 @@ module SonJay
 
     def load_data(data)
       _sonj_properties.each do |k,p|
-        p.value = data.fetch(k)
+        p.load_data data.fetch(k)
       end
     end
 
