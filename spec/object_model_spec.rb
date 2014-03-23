@@ -107,5 +107,6 @@ describe SonJay::ObjectModel do
         ] )
       end
     end
+
   end
 end

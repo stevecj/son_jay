@@ -65,7 +65,6 @@ Feature: Parsing JSON
       | ubername | component.undername |
       |  "Uber!" |  "(under)"          |
 
-  @wip
   Scenario: Value array data
     Given a JSON string defined as:
       """

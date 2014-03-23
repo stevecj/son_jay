@@ -2,10 +2,17 @@ require 'forwardable'
 
 module SonJay
   class ValueArrayModel
+
+    def self.json_create(json)
+      new_instance = new
+      new_instance.load_json json
+      new_instance
+    end
+
     extend Forwardable
 
-    def initialize(array=[])
-      @array = array.to_ary
+    def initialize(options={})
+      @array = options[:internal_array] || nil
     end
 
     def_delegators :array, *(
@@ -18,6 +25,14 @@ module SonJay
 
     def to_json
       as_json.to_json
+    end
+
+    def load_json(json)
+      load_data( JSON.parse(json) )
+    end
+
+    def load_data(data)
+      array.replace data
     end
 
     # Returns the internal array directly for performance reasons,
