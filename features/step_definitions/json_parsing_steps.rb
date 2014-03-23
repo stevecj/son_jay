@@ -20,3 +20,12 @@ Then(/^the instance property values are:$/) do |table|
     expect( actual_val ).to eq( expected_val )
   end
 end
+
+When(/^the JSON is parsed to a value array model instance as:$/) do |code|
+  pending # express the regexp above with the code you wish you had
+end
+
+Then(/^the instance has an entries sequencce of:$/) do |table|
+  # table is a Cucumber::Ast::Table
+  pending # express the regexp above with the code you wish you had
+end

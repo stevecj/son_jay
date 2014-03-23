@@ -76,7 +76,7 @@ Feature: Serializing data to JSON
       }
       """
 
-  Scenario: Value array model
+  Scenario: Value array data
     Given a model instance constructed as:
       """
       instance = SonJay::ValueArrayModel.new
@@ -98,5 +98,45 @@ Feature: Serializing data to JSON
           1,
           null,
           true
+      ]
+      """
+
+  @wip
+  Scenario: Object array data
+    Given an object model defined as:
+      """
+      class MyeObjectModel < SonJay::ObjectModel
+        property :id
+        property :name
+      end
+      """
+    And an object array model instance constructed as:
+      """
+      instance = SonJay::ObjectArrayModel.new(MyObjectModel)
+      """
+    When the instance's element values are assigned as:
+      """
+      obj = instance.push!
+      obj.id = 1
+      obj.name = 'One'
+
+      obj = instance.push!
+      obj.id = 2
+      obj.name = 'Two'
+      """
+    And the model is serialized to JSON as:
+      """
+      json = instance.to_json
+      """
+    Then the resulting JSON is equivalent to:
+      """
+      [
+        {
+            "id"   :  1 ,
+            "name" : "One" ,
+        }, {
+            "id"   :  2 ,
+            "name" : "Two" ,
+        }
       ]
       """

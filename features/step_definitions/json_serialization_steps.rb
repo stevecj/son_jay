@@ -20,3 +20,7 @@ When(/^instance elements are added as:$/) do |code|
   instance = context_data[:instance]
   eval code
 end
+
+When(/^the instance's element values are assigned as:$/) do |code|
+  pending # express the regexp above with the code you wish you had
+end

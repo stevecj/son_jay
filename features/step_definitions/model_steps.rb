@@ -8,3 +8,6 @@ Given(/^a model instance constructed as:$/) do |code|
   context_data[:instance] = instance
 end
 
+Given(/^an object array model instance constructed as:$/) do |code|
+  pending # express the regexp above with the code you wish you had
+end

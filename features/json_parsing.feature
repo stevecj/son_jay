@@ -64,3 +64,23 @@ Feature: Parsing JSON
     Then the instance property values are:
       | ubername | component.undername |
       |  "Uber!" |  "(under)"          |
+
+  @wip
+  Scenario: Value array data
+    Given a JSON string defined as:
+      """
+      json = <<-JSON
+      [
+          "abc",
+          1,
+          null,
+          true
+      ]
+      JSON
+      """
+    When the JSON is parsed to a value array model instance as:
+      """
+      instance = SonJay::ValueArrayModel.json_create(json)
+      """
+    Then the instance has an entries sequencce of:
+      |  "abc"  |  1  |  nil  |  true  |
