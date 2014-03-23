@@ -76,11 +76,10 @@ Feature: Serializing data to JSON
       }
       """
 
-  @wip
-  Scenario: Simple array model
+  Scenario: Value array model
     Given a model instance constructed as:
       """
-      instance = ValueArray.new
+      instance = SonJay::ValueArrayModel.new
       """
     When instance elements are added as:
       """

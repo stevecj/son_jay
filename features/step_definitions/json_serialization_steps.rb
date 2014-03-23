@@ -16,7 +16,7 @@ Then(/^the resulting JSON is equivalent to:$/) do |expected_json_equivalent|
   expect( actual_data ).to eq( expected_data )
 end
 
-When(/^instance elements are added as:$/) do |string|
+When(/^instance elements are added as:$/) do |code|
   instance = context_data[:instance]
   eval code
 end
