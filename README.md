@@ -21,7 +21,8 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+* [Serializing data to JSON](features/json_serialization.feature)
+* [Parsing JSON](features/json_parsing.feature)
 
 ## Contributing
 
