@@ -10,7 +10,7 @@ describe SonJay::ValueArrayModel do
   }
 
   it "is empty by default" do
-    expect( subject ).to be === []
+    expect( subject ).to eq( [] )
   end
 
   it "returns a copy of its internal array from #to_a" do
@@ -46,12 +46,12 @@ describe SonJay::ValueArrayModel do
 
     subject.load_json json
 
-    expect( subject.to_a ).to be === [
+    expect( subject.to_a ).to eq( [
       'abc',
       123,
       nil,
       false
-    ]
+    ] )
   end
 
   #TODO: Duplicates code under test. Better way to cover this?

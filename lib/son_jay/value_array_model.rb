@@ -1,7 +1,7 @@
-require 'forwardable'
+require 'delegate'
 
 module SonJay
-  class ValueArrayModel
+  class ValueArrayModel < DelegateClass(Array)
 
     def self.json_create(json)
       new_instance = new
@@ -9,18 +9,13 @@ module SonJay
       new_instance
     end
 
-    extend Forwardable
-
     def initialize(options={})
-      @array = options[:internal_array] || nil
+      array = options[:internal_array] || []
+      super array
     end
 
-    def_delegators :array, *(
-      Array.instance_methods - Object.instance_methods - [:to_a, :to_ary]
-    )
-
     def to_a
-      array.dup
+      __getobj__.dup
     end
 
     def to_json
@@ -31,30 +26,13 @@ module SonJay
       load_data( JSON.parse(json) )
     end
 
-    def load_data(data)
-      array.replace data
-    end
+    alias load_data replace
 
     # Returns the internal array directly for performance reasons,
     # and assumes the caller will not modify the array.
-    def as_json
-      array
-    end
+    alias as_json __getobj__
 
-    def ===(other)
-      if other.kind_of?( self.class )
-        array == other.array
-      elsif other.respond_to?( :to_ary )
-        array == other.to_ary
-      else
-        false
-      end
-    end
+    protected :__getobj__, :__setobj__
 
-    protected
-
-    def array
-      @array ||= []
-    end
   end
 end

@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module SonJay
   module Properties
     class ModeledObject < Properties::Property
