@@ -105,24 +105,28 @@ Feature: Serializing data to JSON
   Scenario: Object array data
     Given an object model defined as:
       """
-      class MyeObjectModel < SonJay::ObjectModel
+      class MyObjectModel < SonJay::ObjectModel
         property :id
         property :name
       end
       """
     And an object array model instance constructed as:
       """
-      instance = SonJay::ObjectArrayModel.new(MyObjectModel)
+      instance = MyObjectModel * 2
       """
     When the instance's element values are assigned as:
       """
-      obj = instance.push!
+      obj = instance.first
       obj.id = 1
       obj.name = 'One'
 
-      obj = instance.push!
+      obj = instance[1]
       obj.id = 2
       obj.name = 'Two'
+
+      obj = instance.push!
+      obj.id = 3
+      obj.name = 'Three'
       """
     And the model is serialized to JSON as:
       """
@@ -137,6 +141,9 @@ Feature: Serializing data to JSON
         }, {
             "id"   :  2 ,
             "name" : "Two" ,
+        }, {
+            "id"   :  3 ,
+            "name" : "Three" ,
         }
       ]
       """

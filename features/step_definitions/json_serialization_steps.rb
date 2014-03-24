@@ -1,3 +1,9 @@
+Given(/^a.* instance constructed as:$/) do |code|
+  instance = nil
+  context_module.module_eval(code)
+  context_data[:instance] = instance
+end
+
 When(/^the instance's property values are assigned as:$/) do |code|
   instance = context_data.fetch( :instance )
   eval code
