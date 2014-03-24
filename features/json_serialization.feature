@@ -15,7 +15,7 @@ Feature: Serializing data to JSON
       """
       instance = SimpleObjectModel.new
       """
-    When the instance's property values are assigned as:
+    When instance property values are assigned as:
       """
       instance.id        =  55
       instance.name      = "Polygon"
@@ -56,7 +56,7 @@ Feature: Serializing data to JSON
       """
       instance = CompositeObjectModel.new
       """
-    When the instance's property values are assigned as:
+    When instance property values are assigned as:
       """
       instance.ubername = 'Uber!'
       instance.component.undername = '(under)'
@@ -101,7 +101,6 @@ Feature: Serializing data to JSON
       ]
       """
 
-  @wip
   Scenario: Object array data
     Given an object model defined as:
       """
@@ -114,7 +113,7 @@ Feature: Serializing data to JSON
       """
       instance = MyObjectModel * 2
       """
-    When the instance's element values are assigned as:
+    When instance element values are assigned as:
       """
       obj = instance.first
       obj.id = 1
@@ -137,13 +136,13 @@ Feature: Serializing data to JSON
       [
         {
             "id"   :  1 ,
-            "name" : "One" ,
+            "name" : "One"
         }, {
             "id"   :  2 ,
-            "name" : "Two" ,
+            "name" : "Two"
         }, {
             "id"   :  3 ,
-            "name" : "Three" ,
+            "name" : "Three"
         }
       ]
       """

@@ -34,6 +34,11 @@ module SonJay
         end
       end
 
+      def *(initial_length)
+        element_factory = method(:new)
+        SonJay::ModelArray.new( element_factory, initial_length )
+      end
+
       private
 
       def properties

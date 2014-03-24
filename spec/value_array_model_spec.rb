@@ -54,17 +54,4 @@ describe SonJay::ValueArrayModel do
     ] )
   end
 
-  #TODO: Duplicates code under test. Better way to cover this?
-  methods_delegated_to_int_array =
-    Array.instance_methods - Object.instance_methods - [:to_a, :to_ary]
-    
-  methods_delegated_to_int_array.sort.each do |msg|
-    it "delegates ##{msg} to its internal array" do
-      init_options[:internal_array] = internal_array
-      internal_array.stub to_json: :the_json_representation
-      expect( internal_array ).to receive( msg )
-      subject.public_send msg
-    end
-  end
-
 end
