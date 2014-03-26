@@ -79,7 +79,7 @@ Feature: Serializing data to JSON
   Scenario: Value array data
     Given a model instance constructed as:
       """
-      instance = SonJay::ValueArrayModel.new
+      instance = SonJay[].new
       """
     When instance elements are added as:
       """
