@@ -41,14 +41,6 @@ describe SonJay::ObjectModel do
       end
     end
 
-    describe '::*' do
-      it "returns an object array model of the given length with the subclass as its element model" do
-        actual = subclass * 2
-        expect( actual.length ).to eq( 2 )
-        expect( actual.first ).to be_kind_of( subclass )
-      end
-    end
-
     describe '#to_json' do
       let( :subclass ){ Class.new(described_class) do
         property :a

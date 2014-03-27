@@ -79,7 +79,7 @@ Feature: Serializing data to JSON
   Scenario: Value array data
     Given a model instance constructed as:
       """
-      instance = SonJay[].new
+      instance = SonJay{ [] }.new
       """
     When instance elements are added as:
       """
@@ -111,21 +111,17 @@ Feature: Serializing data to JSON
       """
     And an object array model instance constructed as:
       """
-      instance = MyObjectModel * 2
+      instance = SonJay{ [ MyObjectModel ] }.new
       """
     When instance element values are assigned as:
       """
-      obj = instance.first
+      obj = instance.push!
       obj.id = 1
       obj.name = 'One'
 
-      obj = instance[1]
+      obj = instance.push!
       obj.id = 2
       obj.name = 'Two'
-
-      obj = instance.push!
-      obj.id = 3
-      obj.name = 'Three'
       """
     And the model is serialized to JSON as:
       """
@@ -140,9 +136,6 @@ Feature: Serializing data to JSON
         }, {
             "id"   :  2 ,
             "name" : "Two"
-        }, {
-            "id"   :  3 ,
-            "name" : "Three"
         }
       ]
       """

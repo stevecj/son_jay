@@ -4,9 +4,9 @@ module SonJay
   class ModelArray
     extend Forwardable
 
-    def initialize( element_factory, initial_length )
-      @element_factory = element_factory
-      @_array = Array.new( initial_length ){ |i| element_factory.call }
+    def initialize(element_factory_getter)
+      @element_factory_getter = element_factory_getter
+      @_array = []
     end
 
     def_delegators :_array, *[
@@ -37,7 +37,11 @@ module SonJay
 
     protected
 
-    attr_reader :_array, :element_factory
+    attr_reader :_array, :element_factory_getter
+
+    def element_factory
+      @element_factory ||= element_factory_getter.call
+    end
 
     alias as_json _array
 
