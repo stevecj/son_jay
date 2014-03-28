@@ -11,7 +11,7 @@ module SonJay
           ValueArrayModel.new
         else
           element_factory = ModelFactory.new{ instruction.first }
-          ModelArray.new( ->{ element_factory } )
+          ModelArray.new{ element_factory }
         end
       elsif instruction.kind_of?( Class )
         instruction.new

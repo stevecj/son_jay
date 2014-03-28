@@ -4,7 +4,7 @@ module SonJay
   class ModelArray
     extend Forwardable
 
-    def initialize(element_factory_getter)
+    def initialize(&element_factory_getter)
       @element_factory_getter = element_factory_getter
       @_array = []
     end
