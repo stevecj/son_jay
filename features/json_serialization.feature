@@ -5,11 +5,13 @@ Feature: Serializing data to JSON
     Given an object model defined as:
       """
       class SimpleObjectModel < SonJay::ObjectModel
-        property :id
-        property :name
-        property :published
-        property :featured
-        property :owner
+        properties do
+          property :id
+          property :name
+          property :published
+          property :featured
+          property :owner
+        end
       end
       """
     And a model instance defined as:

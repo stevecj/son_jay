@@ -1,5 +1,5 @@
-require "son_jay/version"
+require 'son_jay/version'
+require 'son_jay/object_model'
 
 module SonJay
-  # Your code goes here...
 end
