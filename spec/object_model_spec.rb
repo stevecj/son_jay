@@ -28,6 +28,13 @@ describe SonJay::ObjectModel do
       end
     end
 
+    it "has direct property accessor methods for each property" do
+      instance = subclass.new
+
+      instance.abc, instance.xyz = 11, 22
+      expect( [instance.abc, instance.xyz] ).to eq( [11, 22] )
+    end
+
   end
 
 end

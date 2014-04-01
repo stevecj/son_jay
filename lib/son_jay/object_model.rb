@@ -26,6 +26,12 @@ module SonJay
           names = []
           definer = PropertiesDefiner.new(names)
           definer.instance_eval &@property_initializations
+          names.each do |name|
+            class_eval <<-CODE
+              def #{name}         ; sonj_properties[#{name.inspect}].value         ; end
+              def #{name}=(value) ; sonj_properties[#{name.inspect}].value = value ; end
+            CODE
+          end
           names
         end
       end
