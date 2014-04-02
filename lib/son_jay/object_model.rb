@@ -46,5 +46,15 @@ module SonJay
       ]
     end
 
+    def to_json
+      as_json.to_json
+    end
+
+    def as_json
+      Hash[
+        sonj_properties.map{|k,p| [k, p.value]}
+      ]
+    end
+
   end
 end

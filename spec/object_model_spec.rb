@@ -30,11 +30,21 @@ describe SonJay::ObjectModel do
 
     it "has direct property accessor methods for each property" do
       instance = subclass.new
-
       instance.abc, instance.xyz = 11, 22
+
       expect( [instance.abc, instance.xyz] ).to eq( [11, 22] )
     end
 
+    it "serializes to a JSON object representation w/ property values" do
+      instance = subclass.new
+      instance.abc, instance.xyz = 'ABC', nil
+
+      actual_json = instance.to_json
+
+      actual_data = JSON.parse( actual_json)
+      expected_data = {'abc' => 'ABC', 'xyz' => nil}
+      expect( actual_data ).to eq( expected_data )
+    end
   end
 
 end
