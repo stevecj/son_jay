@@ -13,18 +13,17 @@ describe SonJay::ObjectModel do
     }
 
     describe "#sonj_properties" do
-      it "has named properties with settable/gettable value attributes" do
+      it "has name-indexed settable/gettable values for defined properties" do
         instance = subclass.new
 
         properties = instance.sonj_properties
         expect( properties.length ).to eq( 2 )
 
-        ['abc', 'xyz'].each do |prop_name|
-          property = properties[prop_name]
-          expect( property.name ).to eq( prop_name )
-          property.value = :something
-          expect( property.value ).to eq( :something )
-        end
+        properties[:abc] = 1
+        properties[:xyz] = 'XYZ'
+
+        expect( properties[:abc] ).to eq( 1 )
+        expect( properties[:xyz] ).to eq( 'XYZ' )
       end
     end
 

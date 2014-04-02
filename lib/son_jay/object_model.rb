@@ -10,12 +10,6 @@ module SonJay
       end
     end
 
-    class ValueProperty
-      attr_reader :name
-      attr_accessor :value
-      def initialize(name) ; @name = name ; end
-    end
-
     class << self
       def properties(&property_initializations)
         @property_initializations = property_initializations
@@ -28,8 +22,8 @@ module SonJay
           definer.instance_eval &@property_initializations
           names.each do |name|
             class_eval <<-CODE
-              def #{name}         ; sonj_properties[#{name.inspect}].value         ; end
-              def #{name}=(value) ; sonj_properties[#{name.inspect}].value = value ; end
+              def #{name}         ; sonj_properties[#{name.inspect}]         ; end
+              def #{name}=(value) ; sonj_properties[#{name.inspect}] = value ; end
             CODE
           end
           names
@@ -42,7 +36,7 @@ module SonJay
     def initialize
       prop_names = self.class.property_names
       @sonj_properties = Hash[
-        prop_names.map{ |name| [name, ValueProperty.new(name)] }
+        prop_names.map{ |name| [name, nil] }
       ]
     end
 
@@ -51,9 +45,7 @@ module SonJay
     end
 
     def as_json
-      Hash[
-        sonj_properties.map{|k,p| [k, p.value]}
-      ]
+      sonj_properties
     end
 
   end
