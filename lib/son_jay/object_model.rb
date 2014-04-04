@@ -1,3 +1,5 @@
+require 'son_jay/object_model/properties'
+
 module SonJay
   class ObjectModel
     class PropertiesDefiner
@@ -35,17 +37,11 @@ module SonJay
 
     def initialize
       prop_names = self.class.property_names
-      @sonj_properties = Hash[
-        prop_names.map{ |name| [name, nil] }
-      ]
+      @sonj_properties = ObjectModel::Properties.new(prop_names)
     end
 
     def to_json
-      as_json.to_json
-    end
-
-    def as_json
-      sonj_properties
+      sonj_properties.to_json
     end
 
   end
