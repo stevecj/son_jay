@@ -18,7 +18,11 @@ module SonJay
         end
       end
 
-      def_delegators :@data, :length
+      def_delegators :@data, *[
+        :length ,
+        :values ,
+      ]
+
       def_delegator :@data, :has_key?, :has_name?
 
       def [](name)
@@ -31,6 +35,18 @@ module SonJay
       def []=(name, value)
         name = "#{name}"
         raise NameError.new(name) unless @data.has_key?(name)
+        @data[name] = value
+      end
+
+      def load_data(data)
+        data.each_pair do |name, value|
+          load_property name, value
+        end
+      end
+
+      def load_property(name, value)
+        name = "#{name}"
+        return unless @data.has_key?(name)
         @data[name] = value
       end
 

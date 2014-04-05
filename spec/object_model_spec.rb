@@ -44,6 +44,23 @@ describe SonJay::ObjectModel do
       expected_data = {'abc' => 'ABC', 'xyz' => nil}
       expect( actual_data ).to eq( expected_data )
     end
+
+    describe '::json_create' do
+      it "creates an instance with properties filled in from parsed JSON" do
+        json = <<-JSON
+          {
+            "abc":  123  ,
+            "xyz": "XYZ"
+          }
+        JSON
+
+        instance = subclass.json_create( json )
+
+        expect( instance.abc ).to eq(  123  )
+        expect( instance.xyz ).to eq( 'XYZ' )
+      end
+    end
+
   end
 
 end

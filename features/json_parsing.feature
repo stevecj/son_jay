@@ -1,6 +1,5 @@
 Feature: Parsing data from JSON
 
-  @wip
   Scenario: Simple object data
     Given an object model defined as:
       """
@@ -28,7 +27,7 @@ Feature: Parsing data from JSON
       """
     When the JSON is parsed to a model instance as:
       """
-      instance = SimpleObjectModel.json_create
+      instance = SimpleObjectModel.json_create( json )
       """
     Then the instance attributes are as follows:
       | id  | name       | published | featured | owner |

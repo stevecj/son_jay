@@ -55,4 +55,40 @@ describe SonJay::ObjectModel::Properties do
     end
   end
 
+  describe "load_property" do
+    it "writes to existing properties" do
+      subject.load_property( 'bbb', 11 )
+      subject.load_property( 'ccc', 12 )
+
+      expect( subject['bbb'] ).to eq( 11 )
+      expect( subject['ccc'] ).to eq( 12 )
+    end
+
+    it "ignores attempts to write to non-existent properties" do
+      expect{ subject.load_property('xx', 10) }.
+        not_to change{ subject.length }
+      expect( subject.values.select{|v| ! v.nil? } ).to be_empty
+    end
+
+    it "allows string or symbol for property name" do
+      subject.load_property( 'aaa' , 888 )
+      subject.load_property( :ccc  , 999 )
+
+      expect( subject['aaa'] ).to eq( 888 )
+      expect( subject['ccc'] ).to eq( 999 )
+    end
+  end
+
+  describe "load_data" do
+    it "populates property values from hash entries" do
+      subject.load_data({
+        'bbb' => 'abc' ,
+        'ccc' => false ,
+      })
+      expect( subject['aaa'] ).to be_nil
+      expect( subject['bbb'] ).to eq( 'abc' )
+      expect( subject['ccc'] ).to eq( false )
+    end
+  end
+
 end
