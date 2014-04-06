@@ -2,7 +2,10 @@ require 'spec_helper'
 
 describe SonJay::ObjectModel::Properties do
   subject{
-    described_class.new( ['aaa', 'bbb', 'ccc'] )
+    property_defs = %w[aaa bbb ccc].map{ |name|
+      SonJay::ObjectModel::PropertyDefinition.new( name )
+    }
+    described_class.new( property_defs )
   }
 
   it "has an entry for each property name specified during initialization" do

@@ -11,11 +11,13 @@ module SonJay
 
       extend Forwardable
 
-      def initialize(property_names, property_models={})
+      def initialize(property_definitions)
         @data = {}
-        property_names.each do |prop_name|
-          model_class = property_models[prop_name]
-          @data[prop_name] = model_class ? model_class.new : nil
+        @model_properties = Set.new
+        property_definitions.each do |d|
+          is_model_property = !! d.model_class
+          @data[d.name] = is_model_property ? d.model_class.new : nil
+          @model_properties << d.name if is_model_property
         end
       end
 
@@ -48,7 +50,11 @@ module SonJay
       def load_property(name, value)
         name = "#{name}"
         return unless @data.has_key?(name)
-        @data[name] = value
+        if @model_properties.include?(name)
+          @data[name].sonj_properties.load_data value
+        else
+          @data[name] = value
+        end
       end
 
       def has_name?(name)

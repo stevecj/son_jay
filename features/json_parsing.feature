@@ -32,7 +32,7 @@ Feature: Parsing data from JSON
     Then the instance attributes are as follows:
       | id  | name       | published | featured | owner |
       |  55 |  "Polygon" |  true     |  false   |  nil  |
-  @wip
+
   Scenario: Composite object data
     Given an object model defined as:
       """

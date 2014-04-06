@@ -1,19 +1,18 @@
 require 'son_jay/object_model/properties'
+require 'son_jay/object_model/property_definition'
 
 module SonJay
   class ObjectModel
 
     class PropertiesDefiner
 
-      def initialize(names, property_models)
-        @names           = names
-        @property_models = property_models
+      def initialize(property_definitions)
+        @property_definitions = property_definitions
       end
 
       def property(name, options={})
         name = "#{name}"
-        @names << name
-        @property_models[name] = options[:model]
+        @property_definitions << PropertyDefinition.new( name, options[:model] )
       end
 
     end
@@ -31,35 +30,30 @@ module SonJay
         @property_initializations = property_initializations
       end
 
-      def property_names
-        @property_names ||= begin
-          names = []
+      def property_definitions
+        @property_definitions ||= begin
+          definitions = []
 
-          #TODO: Clean up this mess.
-          @property_models ||= {}
-
-          definer = PropertiesDefiner.new(names, @property_models)
+          definer = PropertiesDefiner.new(definitions)
           definer.instance_eval &@property_initializations
-          names.each do |name|
+          definitions.each do |d|
+            name = d.name
             class_eval <<-CODE
               def #{name}         ; sonj_properties[#{name.inspect}]         ; end
               def #{name}=(value) ; sonj_properties[#{name.inspect}] = value ; end
             CODE
           end
-          names
+          definitions
         end
       end
-
-      attr_reader :property_models
 
     end
 
     attr_reader :sonj_properties
 
     def initialize
-      prop_names = self.class.property_names
-      property_models = self.class.property_models
-      @sonj_properties = ObjectModel::Properties.new(prop_names, property_models)
+      definitions = self.class.property_definitions
+      @sonj_properties = ObjectModel::Properties.new( definitions )
     end
 
     def to_json(*args)
