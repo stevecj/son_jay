@@ -11,10 +11,11 @@ module SonJay
 
       extend Forwardable
 
-      def initialize( property_names )
+      def initialize(property_names, property_models={})
         @data = {}
         property_names.each do |prop_name|
-          @data[prop_name] = nil
+          model_class = property_models[prop_name]
+          @data[prop_name] = model_class ? model_class.new : nil
         end
       end
 

@@ -63,4 +63,64 @@ describe SonJay::ObjectModel do
 
   end
 
+  describe "a subclass that defines value and modeled-object properties" do
+    let( :subclass ) {
+      dmc_1, dmc_2 = detail_model_class_1, detail_model_class_2
+      pbcs = property_block_calls
+      Class.new(described_class) do
+        properties do
+          pbcs << 1
+          property :a
+          property :obj_1, model: dmc_1
+          property :obj_2, model: dmc_2
+        end
+      end
+    }
+
+    let( :property_block_calls ) { [] }
+
+    let( :detail_model_class_1 ) {
+      Class.new(described_class) do
+        properties do
+          property :aaa
+          property :bbb
+        end
+      end
+    }
+
+    let( :detail_model_class_2 ) {
+      Class.new(described_class) do
+        properties do
+          property :ccc
+        end
+      end
+    }
+
+    it "does not immediately invoke its properties block when declared" do
+      _ = subclass
+      expect( property_block_calls ).to be_empty
+    end
+
+    describe "#sonj_properties" do
+      it "has an entry for each defined property" do
+        properties = subclass.new.sonj_properties
+        expect( properties.length ).to eq( 3 )
+      end
+    end
+
+    describe "#sonj_properties" do
+      it "has name-indexed settable/gettable values for defined value properties" do
+        properties = subclass.new.sonj_properties
+        properties[:a] = 1
+        expect( properties[:a] ).to eq( 1 )
+      end
+
+      it "has name-indexed gettable values for defined modeled-object properties" do
+        properties = subclass.new.sonj_properties
+        expect( properties[:obj_1] ).to be_kind_of( detail_model_class_1 )
+      end
+    end
+
+  end
+
 end

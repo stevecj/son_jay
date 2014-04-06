@@ -2,14 +2,20 @@ require 'son_jay/object_model/properties'
 
 module SonJay
   class ObjectModel
+
     class PropertiesDefiner
-      def initialize(names)
-        @names = names
+
+      def initialize(names, property_models)
+        @names           = names
+        @property_models = property_models
       end
 
-      def property(name)
-        @names << name.to_s
+      def property(name, options={})
+        name = "#{name}"
+        @names << name
+        @property_models[name] = options[:model]
       end
+
     end
 
     class << self
@@ -28,7 +34,11 @@ module SonJay
       def property_names
         @property_names ||= begin
           names = []
-          definer = PropertiesDefiner.new(names)
+
+          #TODO: Clean up this mess.
+          @property_models ||= {}
+
+          definer = PropertiesDefiner.new(names, @property_models)
           definer.instance_eval &@property_initializations
           names.each do |name|
             class_eval <<-CODE
@@ -39,17 +49,21 @@ module SonJay
           names
         end
       end
+
+      attr_reader :property_models
+
     end
 
     attr_reader :sonj_properties
 
     def initialize
       prop_names = self.class.property_names
-      @sonj_properties = ObjectModel::Properties.new(prop_names)
+      property_models = self.class.property_models
+      @sonj_properties = ObjectModel::Properties.new(prop_names, property_models)
     end
 
-    def to_json
-      sonj_properties.to_json
+    def to_json(*args)
+      sonj_properties.to_json(*args)
     end
 
   end

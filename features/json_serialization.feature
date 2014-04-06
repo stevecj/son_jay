@@ -40,7 +40,6 @@ Feature: Serializing data to JSON
       }
       """
 
-  @wip
   Scenario: Composite object data
     Given an object model defined as:
       """
