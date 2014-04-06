@@ -72,3 +72,30 @@ Feature: Parsing data from JSON
     Then the instance attributes are as follows:
       | name      | details.color | details.size |
       |  "Cherry" |  "red"        |  "small"     |
+
+  Scenario: Object data with an value-array property
+    Given an object model defined as:
+      """
+      class ContestantModel < SonJay::ObjectModel
+        properties do
+          property :name
+          property :scores, model: []
+        end
+      end
+      """
+    And JSON data defined as:
+      """
+      json = <<-JSON
+        {
+            "name"   : "Pat" ,
+            "scores" : [ 9, 5, 7 ]
+        }
+      JSON
+      """
+    When the JSON is parsed to a model instance as:
+      """
+      instance = ContestantModel.json_create( json )
+      """
+    Then the instance attributes are as follows:
+      | name   | scores[0] | scores[1] | scores[2] |
+      |  "Pat" |  9        |  5        |  7        |

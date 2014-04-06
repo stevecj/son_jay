@@ -12,18 +12,18 @@ describe SonJay::ObjectModel do
       end
     }
 
-    describe "#sonj_properties" do
+    describe "#sonj_content" do
       it "has name-indexed settable/gettable values for defined properties" do
         instance = subclass.new
 
-        properties = instance.sonj_properties
-        expect( properties.length ).to eq( 2 )
+        content = instance.sonj_content
+        expect( content.length ).to eq( 2 )
 
-        properties[:abc] = 1
-        properties[:xyz] = 'XYZ'
+        content[:abc] = 1
+        content[:xyz] = 'XYZ'
 
-        expect( properties[:abc] ).to eq( 1 )
-        expect( properties[:xyz] ).to eq( 'XYZ' )
+        expect( content[:abc] ).to eq( 1 )
+        expect( content[:xyz] ).to eq( 'XYZ' )
       end
     end
 
@@ -101,23 +101,23 @@ describe SonJay::ObjectModel do
       expect( property_block_calls ).to be_empty
     end
 
-    describe "#sonj_properties" do
+    describe "#sonj_content" do
       it "has an entry for each defined property" do
-        properties = subclass.new.sonj_properties
-        expect( properties.length ).to eq( 3 )
+        content = subclass.new.sonj_content
+        expect( content.length ).to eq( 3 )
       end
     end
 
-    describe "#sonj_properties" do
+    describe "#sonj_content" do
       it "has name-indexed settable/gettable values for defined value properties" do
-        properties = subclass.new.sonj_properties
-        properties[:a] = 1
-        expect( properties[:a] ).to eq( 1 )
+        content = subclass.new.sonj_content
+        content[:a] = 1
+        expect( content[:a] ).to eq( 1 )
       end
 
       it "has name-indexed gettable values for defined modeled-object properties" do
-        properties = subclass.new.sonj_properties
-        expect( properties[:obj_1] ).to be_kind_of( detail_model_class_1 )
+        content = subclass.new.sonj_content
+        expect( content[:obj_1] ).to be_kind_of( detail_model_class_1 )
       end
     end
 

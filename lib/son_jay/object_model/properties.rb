@@ -15,8 +15,8 @@ module SonJay
         @data = {}
         @model_properties = Set.new
         property_definitions.each do |d|
-          is_model_property = !! d.model_class
-          @data[d.name] = is_model_property ? d.model_class.new : nil
+          is_model_property = !! d.model_factory
+          @data[d.name] = is_model_property ? d.model_factory.call : nil
           @model_properties << d.name if is_model_property
         end
       end
@@ -51,7 +51,7 @@ module SonJay
         name = "#{name}"
         return unless @data.has_key?(name)
         if @model_properties.include?(name)
-          @data[name].sonj_properties.load_data value
+          @data[name].sonj_content.load_data value
         else
           @data[name] = value
         end

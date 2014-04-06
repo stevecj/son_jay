@@ -2,25 +2,38 @@ require 'spec_helper'
 
 describe SonJay::ObjectModel::Properties do
   subject{
-    property_defs = %w[aaa bbb ccc].map{ |name|
-      SonJay::ObjectModel::PropertyDefinition.new( name )
-    }
-    described_class.new( property_defs )
+    described_class.new( [
+      SonJay::ObjectModel::PropertyDefinition.new( 'aaa' ) ,
+      SonJay::ObjectModel::PropertyDefinition.new( 'bbb' ) ,
+      SonJay::ObjectModel::PropertyDefinition.new( 'ccc' ) ,
+      SonJay::ObjectModel::PropertyDefinition.new( 'ddd', ddd_model_class ) ,
+    ] )
   }
 
+  let( :ddd_model_class ) { Class.new do
+    class Content
+      def initialize(model) ; @model = model ; end
+      def load_data(data) ; @model.class.loaded_data = data ; end
+    end
+    class << self ; attr_accessor :loaded_data ; end
+    def to_json(*) ; '"ddd..."' ; end
+    def sonj_content ; Content.new(self) ; end
+  end }
+
   it "has an entry for each property name specified during initialization" do
-    expect( subject.length ).to eq( 3 )
+    expect( subject.length ).to eq( 4 )
     expect( subject ).to have_name('aaa')
     expect( subject ).to have_name('bbb')
     expect( subject ).to have_name('ccc')
+    expect( subject ).to have_name('ddd')
   end
 
   describe "property value access by name" do
-    it "reads nil by default for an existing property" do
+    it "reads nil by default for an existing value property" do
       expect( subject['aaa'] ).to be_nil
     end
 
-    it "writes and reads existing properties" do
+    it "writes and reads existing value properties" do
       subject['bbb'] = 10
       subject['aaa'] = 11
 
@@ -43,6 +56,10 @@ describe SonJay::ObjectModel::Properties do
       expect( subject[:aaa]  ).to eq( 10 )
       expect( subject['bbb'] ).to eq( 11 )
     end
+
+    it "reads an instance of the model for a modeled attribute" do
+      expect( subject[:ddd] ).to be_kind_of( ddd_model_class )
+    end
   end
 
   describe "#to_json" do
@@ -53,13 +70,18 @@ describe SonJay::ObjectModel::Properties do
       actual_json = subject.to_json
 
       actual_data = JSON.parse( actual_json )
-      expected_data = {'aaa' => 'abc', 'bbb' => nil, 'ccc' => true}
+      expected_data = {
+        'aaa' => 'abc' ,
+        'bbb' =>  nil ,
+        'ccc' =>  true ,
+        'ddd' => "ddd..." ,
+      }
       expect( actual_data ).to eq( expected_data )
     end
   end
 
   describe "load_property" do
-    it "writes to existing properties" do
+    it "writes to existing value properties" do
       subject.load_property( 'bbb', 11 )
       subject.load_property( 'ccc', 12 )
 
@@ -67,10 +89,14 @@ describe SonJay::ObjectModel::Properties do
       expect( subject['ccc'] ).to eq( 12 )
     end
 
+    it "loads data into existing modeled properties" do
+      subject.load_property( 'ddd', 'some data' )
+      expect( ddd_model_class.loaded_data ).to eq( 'some data' )
+    end
+
     it "ignores attempts to write to non-existent properties" do
       expect{ subject.load_property('xx', 10) }.
         not_to change{ subject.length }
-      expect( subject.values.select{|v| ! v.nil? } ).to be_empty
     end
 
     it "allows string or symbol for property name" do
@@ -86,11 +112,13 @@ describe SonJay::ObjectModel::Properties do
     it "populates property values from hash entries" do
       subject.load_data({
         'bbb' => 'abc' ,
-        'ccc' => false ,
+        'ccc' =>  false ,
+        'ddd' => 'something...' ,
       })
       expect( subject['aaa'] ).to be_nil
       expect( subject['bbb'] ).to eq( 'abc' )
       expect( subject['ccc'] ).to eq( false )
+      expect( ddd_model_class.loaded_data ).to eq( 'something...' )
     end
   end
 

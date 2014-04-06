@@ -22,7 +22,7 @@ module SonJay
       def json_create(json)
         data = JSON.parse( json )
         instance = new
-        instance.sonj_properties.load_data data
+        instance.sonj_content.load_data data
         instance
       end
 
@@ -39,8 +39,8 @@ module SonJay
           definitions.each do |d|
             name = d.name
             class_eval <<-CODE
-              def #{name}         ; sonj_properties[#{name.inspect}]         ; end
-              def #{name}=(value) ; sonj_properties[#{name.inspect}] = value ; end
+              def #{name}         ; sonj_content[#{name.inspect}]         ; end
+              def #{name}=(value) ; sonj_content[#{name.inspect}] = value ; end
             CODE
           end
           definitions
@@ -49,15 +49,15 @@ module SonJay
 
     end
 
-    attr_reader :sonj_properties
+    attr_reader :sonj_content
 
     def initialize
       definitions = self.class.property_definitions
-      @sonj_properties = ObjectModel::Properties.new( definitions )
+      @sonj_content = ObjectModel::Properties.new( definitions )
     end
 
     def to_json(*args)
-      sonj_properties.to_json(*args)
+      sonj_content.to_json(*args)
     end
 
   end

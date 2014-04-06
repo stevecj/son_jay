@@ -84,3 +84,34 @@ Feature: Serializing data to JSON
             }
       }
       """
+
+  Scenario: Object data with an value-array property
+    Given an object model defined as:
+      """
+      class ContestantModel < SonJay::ObjectModel
+        properties do
+          property :name
+          property :scores, model: []
+        end
+      end
+      """
+    And a model instance defined as:
+      """
+      instance = ContestantModel.new
+      """
+    When the instance's property values are assigned as:
+      """
+      instance.name   = "Pat"
+      instance.scores = [ 9, 5, 7 ]
+      """
+    And the model is serialized to JSON as:
+      """
+      json = instance.to_json
+      """
+    Then the resulting JSON is equivalent to:
+      """
+      {
+          "name"   : "Pat" ,
+          "scores" : [ 9, 5, 7 ]
+      }
+      """
