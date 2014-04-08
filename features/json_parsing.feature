@@ -99,3 +99,50 @@ Feature: Parsing data from JSON
     Then the instance attributes are as follows:
       | name   | scores[0] | scores[1] | scores[2] |
       |  "Pat" |  9        |  5        |  7        |
+
+  @wip
+  Scenario: Object data with an object-array property
+    Given an object model defined as:
+      """
+      class ListModel < SonJay::ObjectModel
+        properties do
+          property :name
+          property :items, :model => [ ItemModel ]
+        end
+      end
+      """
+    And an object model defined as:
+      """
+      class ItemModel < SonJay::ObjectModel
+        properties do
+          property :description
+          property :priority
+        end
+      end
+      """
+    And JSON data defined as:
+      """
+      json = <<-JSON
+        {
+          "name" :  "Shopping" ,
+          "items" :
+            [
+              {
+                "description" : "Potato Chips" ,
+                "priority"    : "Low"
+              } ,
+              {
+                "description" : "Ice Cream" ,
+                "priority"    : "High"
+              }
+            ]
+        }
+      JSON
+      """
+    When the JSON is parsed to a model instance as:
+      """
+      instance = ListModel.json_create( json )
+      """
+    Then the instance attributes are as follows:
+      | name        | items[0].description | items[0].priority | items[1].description | items[0].priority |
+      |  "Shopping" |  "Potato Chips       |  "Low"            |  "Ice Cream"         |  "High"           |
