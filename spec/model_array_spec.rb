@@ -28,6 +28,15 @@ describe SonJay::ModelArray do
       def sonj_content ; Content.new(self) ; end
     end }
 
+    describe '::array_class' do
+      it "returns a model-array subclass for entries of this model-array type (nested array)" do
+        array_class = subclass.array_class
+        puts array_class.ancestors
+        expect( array_class.ancestors ).to include( SonJay::ModelArray )
+        expect( array_class.entry_class ).to eq( subclass )
+      end
+    end
+
     it "produces instances that are initially empty" do
       instance = subclass.new
       expect( instance ).to be_empty

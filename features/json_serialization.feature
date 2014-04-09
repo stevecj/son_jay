@@ -172,3 +172,55 @@ Feature: Serializing data to JSON
           ]
       }
       """
+
+  Scenario: Object data with a nested object-array property
+    Given an object model defined as:
+      """
+      class TableModel < SonJay::ObjectModel
+        properties do
+          property :rows, :model => [[ CellModel ]]
+        end
+      end
+      """
+    And an object model defined as:
+      """
+      class CellModel < SonJay::ObjectModel
+        properties do
+          property :is_head
+          property :value
+        end
+      end
+      """
+    And a model instance defined as:
+      """
+      instance = TableModel.new
+      """
+    When the instance's property values are assigned as:
+      """
+      row_cells = instance.rows.additional
+      row_cells.additional.tap{ |c| c.is_head=1 ; c.value='Date'      }
+      row_cells.additional.tap{ |c| c.is_head=1 ; c.value='Sightings' }
+
+      row_cells = instance.rows.additional
+      row_cells.additional.tap{ |c| c.is_head=1 ; c.value='Jan 1' }
+      row_cells.additional.tap{ |c| c.is_head=0 ; c.value=3       }
+
+      row_cells = instance.rows.additional
+      row_cells.additional.tap{ |c| c.is_head=1 ; c.value='Jan 3' }
+      row_cells.additional.tap{ |c| c.is_head=0 ; c.value=2       }
+      """
+    And the model is serialized to JSON as:
+      """
+      json = instance.to_json
+      """
+    Then the resulting JSON is equivalent to:
+      """
+      {
+        "rows" :
+          [
+            [ {"is_head": 1, "value": "Date"}  , {"is_head": 1, "value": "Sightings"} ] ,
+            [ {"is_head": 1, "value": "Jan 1"} , {"is_head": 0, "value": 3}           ] ,
+            [ {"is_head": 1, "value": "Jan 3"} , {"is_head": 0, "value": 2}           ]
+          ]
+      }
+      """
