@@ -2,6 +2,18 @@
 
 Symmetrical transformation between structured data and JSON
 
+Allows concrete object/array data model classes to be defined,
+and then allows JSON serialization/parsing from/to an instance
+of one of those classes.
+
+This allows a single body of code to be used to define a JSON
+API structure for a provider and its clients.
+
+Instances of these models can also be used to help keep
+automated tests simple and reliable. Attempts by test setup
+code or code under test to produce incorrectly structured
+data will generally fail in a fast, informative way.
+
 ## Installation
 
 Note: since this gem has not yet been published, the following
@@ -21,7 +33,8 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+- [Serialization](features/json_serialization.feature)
+- [Parsing](features/json_parsing.feature)
 
 ## Contributing
 
