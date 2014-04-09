@@ -15,8 +15,8 @@ module SonJay
         @data = {}
         @model_properties = Set.new
         property_definitions.each do |d|
-          is_model_property = !! d.model_factory
-          @data[d.name] = is_model_property ? d.model_factory.call : nil
+          is_model_property = !! d.model_class
+          @data[d.name] = is_model_property ? d.model_class.new : nil
           @model_properties << d.name if is_model_property
         end
       end

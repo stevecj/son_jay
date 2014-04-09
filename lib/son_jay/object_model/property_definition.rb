@@ -2,24 +2,24 @@ module SonJay
   class ObjectModel
 
     class PropertyDefinition
-      attr_reader :name, :model_factory
+      attr_reader :name, :model_class
 
       def initialize(name, instruction = nil)
-        @name          = name
-        @model_factory = model_factory_for_instruction(instruction)
+        @name        = name
+        @model_class = model_class_for_instruction(instruction)
       end
 
       private
 
-      def model_factory_for_instruction(instruction)
+      def model_class_for_instruction(instruction)
         if instruction.nil?
           nil
         elsif instruction == []
-          SonJay::ValueArray.method( :new )
+          SonJay::ValueArray
         elsif instruction.respond_to?(:to_ary)
-          array_model_class(instruction).method( :new )
+          array_model_class(instruction)
         elsif instruction.respond_to?( :new )
-          instruction.method( :new )
+          instruction
         end
       end
 
