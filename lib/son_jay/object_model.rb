@@ -47,6 +47,13 @@ module SonJay
         end
       end
 
+      def array_class
+        @array_class ||= begin
+          klass = SonJay::ModelArray(self)
+          const_set :Array, klass
+        end
+      end
+
     end
 
     attr_reader :sonj_content

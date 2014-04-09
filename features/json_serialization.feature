@@ -116,7 +116,6 @@ Feature: Serializing data to JSON
       }
       """
 
-  @wip
   Scenario: Object data with an object-array property
     Given an object model defined as:
       """

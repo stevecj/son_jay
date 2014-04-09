@@ -3,6 +3,16 @@ require 'spec_helper'
 describe SonJay::ObjectModel do
 
   describe "a subclass that defines value properties" do
+
+    describe '::array_class' do
+      it "returns a model-array subclass for entries of this type" do
+        array_class = subclass.array_class
+        puts array_class.ancestors
+        expect( array_class.ancestors ).to include( SonJay::ModelArray )
+        expect( array_class.entry_class ).to eq( subclass )
+      end
+    end
+
     let( :subclass ) {
       Class.new(described_class) do
         properties do

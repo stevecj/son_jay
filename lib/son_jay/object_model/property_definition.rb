@@ -16,10 +16,23 @@ module SonJay
           nil
         elsif instruction == []
           SonJay::ValueArray.method( :new )
+        elsif instruction.respond_to?(:to_ary)
+          array_model_class(instruction).method( :new )
         elsif instruction.respond_to?( :new )
           instruction.method( :new )
         end
       end
+
+      private
+
+      def array_model_class(instruction)
+        return instruction unless instruction.respond_to?(:to_ary)
+
+        sub_instruction = instruction.first
+        sub_model_class = array_model_class( sub_instruction )
+        sub_model_class.array_class
+      end
+
     end
 
   end
