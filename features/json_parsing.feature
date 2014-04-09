@@ -100,7 +100,6 @@ Feature: Parsing data from JSON
       | name   | scores[0] | scores[1] | scores[2] |
       |  "Pat" |  9        |  5        |  7        |
 
-  @wip
   Scenario: Object data with an object-array property
     Given an object model defined as:
       """
@@ -144,5 +143,5 @@ Feature: Parsing data from JSON
       instance = ListModel.json_create( json )
       """
     Then the instance attributes are as follows:
-      | name        | items[0].description | items[0].priority | items[1].description | items[0].priority |
-      |  "Shopping" |  "Potato Chips       |  "Low"            |  "Ice Cream"         |  "High"           |
+      | name        | items[0].description | items[0].priority | items[1].description | items[1].priority |
+      |  "Shopping" |  "Potato Chips"      |  "Low"            |  "Ice Cream"         |  "High"           |

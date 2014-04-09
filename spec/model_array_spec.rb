@@ -18,7 +18,15 @@ describe SonJay::ModelArray do
     let( :subclass ) { Class.new(described_class).tap{ |c|
       c.send :entry_class=, entry_class
     } }
-    let( :entry_class ) { Class.new }
+    let( :entry_class ) { Class.new do
+      class Content
+        def initialize( entry ) ; @entry = entry ; end
+        def load_data(data) ; @entry.loaded_data = data ; end
+      end
+
+      attr_accessor :loaded_data
+      def sonj_content ; Content.new(self) ; end
+    end }
 
     it "produces instances that are initially empty" do
       instance = subclass.new
@@ -29,11 +37,24 @@ describe SonJay::ModelArray do
     describe "#additional" do
       it "adds a new entry of the modeled type, and returns the entry" do
         instance = subclass.new
+
         entry_0 = instance.additional
         entry_1 = instance.additional
 
         expect( entry_0 ).to be_kind_of( entry_class )
         expect( instance.entries ).to eq( [entry_0, entry_1] )
+      end
+    end
+
+    describe '#load_data' do
+      it "loads entries in the given enumerable into its own model instance entries" do
+        instance = subclass.new
+
+        instance.load_data( ['entry 0 data', 'entry 1 data'] )
+
+        expect( instance.length ).to eq( 2 )
+        expect( instance[0].loaded_data ).to eq( 'entry 0 data' )
+        expect( instance[1].loaded_data ).to eq( 'entry 1 data' )
       end
     end
   end

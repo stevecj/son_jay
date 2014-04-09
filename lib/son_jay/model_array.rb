@@ -19,10 +19,20 @@ module SonJay
       @entries = []
     end
 
+    def sonj_content
+      self
+    end
+
     def additional
       entry = self.class.entry_class.new
       @entries << entry
       entry
+    end
+
+    def load_data(data)
+      data.each do |entry_data|
+        additional.sonj_content.load_data entry_data
+      end
     end
 
     def_delegators :@entries, *[
