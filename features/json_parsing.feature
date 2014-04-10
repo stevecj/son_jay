@@ -100,7 +100,6 @@ Feature: Parsing data from JSON
       | name   | scores[0] | scores[1] | scores[2] |
       |  "Pat" |  9        |  5        |  7        |
 
-  @wip
   Scenario: Object data with a nested value-array property
     Given an object model defined as:
       """

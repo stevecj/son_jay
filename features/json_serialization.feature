@@ -116,7 +116,6 @@ Feature: Serializing data to JSON
       }
       """
 
-  @wip
   Scenario: Object data with a nested value-array property
     Given an object model defined as:
       """

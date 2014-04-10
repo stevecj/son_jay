@@ -14,8 +14,6 @@ module SonJay
       def model_class_for_instruction(instruction)
         if instruction.nil?
           nil
-        elsif instruction == []
-          SonJay::ValueArray
         elsif instruction.respond_to?(:to_ary)
           array_model_class(instruction)
         elsif instruction.respond_to?( :new )
@@ -27,6 +25,7 @@ module SonJay
 
       def array_model_class(instruction)
         return instruction unless instruction.respond_to?(:to_ary)
+        return SonJay::ValueArray if instruction == []
 
         sub_instruction = instruction.first
         sub_model_class = array_model_class( sub_instruction )
