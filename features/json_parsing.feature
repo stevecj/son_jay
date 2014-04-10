@@ -73,7 +73,7 @@ Feature: Parsing data from JSON
       | name      | details.color | details.size |
       |  "Cherry" |  "red"        |  "small"     |
 
-  Scenario: Object data with an value-array property
+  Scenario: Object data with a value-array property
     Given an object model defined as:
       """
       class ContestantModel < SonJay::ObjectModel
@@ -99,6 +99,44 @@ Feature: Parsing data from JSON
     Then the instance attributes are as follows:
       | name   | scores[0] | scores[1] | scores[2] |
       |  "Pat" |  9        |  5        |  7        |
+
+  @wip
+  Scenario: Object data with a nested value-array property
+    Given an object model defined as:
+      """
+      class TicTacToeModel < SonJay::ObjectModel
+        properties do
+          property :rows, model: [[]]
+        end
+      end
+      """
+    And a model instance defined as:
+      """
+      instance = TicTacToeModel.new
+      """
+    And JSON data defined as:
+      """
+      json = <<-JSON
+        {
+          "rows" : [
+            [ "X", "O", "X" ] ,
+            [ "O", "X", "X" ] ,
+            [ "X", "O", "O" ]
+          ]
+        }
+      JSON
+      """
+    When the JSON is parsed to a model instance as:
+      """
+      instance = TicTacToeModel.json_create( json )
+      """
+    Then the instance attributes are as follows:
+      | rows[0][0]   | rows[0][1] | rows[0][2] |
+      |  'X'         |  'O'       |  'X'       |
+      | rows[1][0]   | rows[1][1] | rows[1][2] |
+      |  'O'         |  'X'       |  'X'       |
+      | rows[2][0]   | rows[2][1] | rows[2][2] |
+      |  'X'         |  'O'       |  'O'       |
 
   Scenario: Object data with an object-array property
     Given an object model defined as:

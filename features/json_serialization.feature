@@ -85,7 +85,7 @@ Feature: Serializing data to JSON
       }
       """
 
-  Scenario: Object data with an value-array property
+  Scenario: Object data with a value-array property
     Given an object model defined as:
       """
       class ContestantModel < SonJay::ObjectModel
@@ -113,6 +113,41 @@ Feature: Serializing data to JSON
       {
           "name"   : "Pat" ,
           "scores" : [ 9, 5, 7 ]
+      }
+      """
+
+  @wip
+  Scenario: Object data with a nested value-array property
+    Given an object model defined as:
+      """
+      class TicTacToeModel < SonJay::ObjectModel
+        properties do
+          property :rows, model: [[]]
+        end
+      end
+      """
+    And a model instance defined as:
+      """
+      instance = TicTacToeModel.new
+      """
+    When the instance's property values are assigned as:
+      """
+      instance.rows.additional.concat %w[ X O X ]
+      instance.rows.additional.concat %w[ O X X ]
+      instance.rows.additional.concat %w[ X O O ]
+      """
+    And the model is serialized to JSON as:
+      """
+      json = instance.to_json
+      """
+    Then the resulting JSON is equivalent to:
+      """
+      {
+        "rows" : [
+          [ "X", "O", "X" ] ,
+          [ "O", "X", "X" ] ,
+          [ "X", "O", "O" ]
+        ]
       }
       """
 
