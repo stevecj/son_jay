@@ -12,11 +12,15 @@ When(/^the JSON is parsed to a model instance as:$/) do |code|
 end
 
 Then(/^the instance attributes are as follows:$/) do |table|
-  attribute_specs = table.hashes.first
+  row_pairs = table.raw.each_slice(2)
+  attribute_exprs = row_pairs.map( &:first ).reduce( :+ )
+  expected_exprs  = row_pairs.map( &:last  ).reduce( :+ )
+
   instance = context_data[:instance]
-  attribute_specs.each do |attr, expected_val_expr|
-    actual_val = eval( "instance.#{attr}" )
-    expected_val = eval( expected_val_expr )
-    expect( actual_val ).to eq( expected_val )
-  end
+  actuals   = attribute_exprs .map{ |expr| eval( "instance.#{expr}" ) }
+  expecteds = expected_exprs  .map{ |expr| eval(  expr              ) }
+
+  actual_hash   = Hash[ attribute_exprs.zip( actuals   ) ]
+  expected_hash = Hash[ attribute_exprs.zip( expecteds ) ]
+  expect( actual_hash ).to eq( expected_hash )
 end

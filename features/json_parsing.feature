@@ -145,3 +145,46 @@ Feature: Parsing data from JSON
     Then the instance attributes are as follows:
       | name        | items[0].description | items[0].priority | items[1].description | items[1].priority |
       |  "Shopping" |  "Potato Chips"      |  "Low"            |  "Ice Cream"         |  "High"           |
+
+  Scenario: Object data with a nested object-array property
+    Given an object model defined as:
+      """
+      class TableModel < SonJay::ObjectModel
+        properties do
+          property :rows, :model => [[ CellModel ]]
+        end
+      end
+      """
+    And an object model defined as:
+      """
+      class CellModel < SonJay::ObjectModel
+        properties do
+          property :is_head
+          property :value
+        end
+      end
+      """
+    And JSON data defined as:
+      """
+      json = <<-JSON
+      {
+        "rows" :
+          [
+            [ {"is_head": 1, "value": "Date"}  , {"is_head": 1, "value": "Sightings"} ] ,
+            [ {"is_head": 1, "value": "Jan 1"} , {"is_head": 0, "value": 3}           ] ,
+            [ {"is_head": 1, "value": "Jan 3"} , {"is_head": 0, "value": 2}           ]
+          ]
+      }
+      JSON
+      """
+    When the JSON is parsed to a model instance as:
+      """
+      instance = TableModel.json_create( json )
+      """
+    Then the instance attributes are as follows:
+      | rows[0][0].is_head | rows[0][0].value | rows[0][1].is_head | rows[0][1].value |
+      |  1                 |  "Date"          |  1                 |  "Sightings"     |
+      | rows[1][0].is_head | rows[1][0].value | rows[1][1].is_head | rows[1][1].value |
+      |  1                 |  "Jan 1"         |  0                 |  3               |
+      | rows[2][0].is_head | rows[2][0].value | rows[2][1].is_head | rows[2][1].value |
+      |  1                 |  "Jan 3"         |  0                 |  2               |
