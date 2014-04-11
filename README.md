@@ -16,9 +16,6 @@ data will generally fail in a fast, informative way.
 
 ## Installation
 
-Note: since this gem has not yet been published, the following
-instructions will not actually work just yet.
-
 Add this line to your application's Gemfile:
 
     gem 'son_jay'
