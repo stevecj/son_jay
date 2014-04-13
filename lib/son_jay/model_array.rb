@@ -14,6 +14,7 @@ module SonJay
 
     class << self
       attr_accessor :entry_class
+      private :entry_class=
     end
 
     def initialize
