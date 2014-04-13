@@ -1,23 +1,11 @@
 require 'set'
 require 'son_jay/object_model/properties'
 require 'son_jay/object_model/property_definition'
+require 'son_jay/object_model/properties_definer'
 
 module SonJay
   class ObjectModel
     include ActsAsModel
-
-    class PropertiesDefiner
-
-      def initialize(property_definitions)
-        @property_definitions = property_definitions
-      end
-
-      def property(name, options={})
-        name = "#{name}"
-        @property_definitions << PropertyDefinition.new( name, options[:model] )
-      end
-
-    end
 
     class << self
 
