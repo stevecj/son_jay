@@ -1,10 +1,6 @@
 module SonJay
   class ValueArray < ::Array
-    Array = SonJay::ModelArray(self)
-
-    def self.array_class
-      self::Array
-    end
+    include ActsAsModel
 
     def sonj_content
       self

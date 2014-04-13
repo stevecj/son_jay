@@ -4,6 +4,7 @@ require 'son_jay/object_model/property_definition'
 
 module SonJay
   class ObjectModel
+    include ActsAsModel
 
     class PropertiesDefiner
 
@@ -52,13 +53,6 @@ module SonJay
         end
 
         @property_definitions
-      end
-
-      def array_class
-        @array_class ||= begin
-          klass = SonJay::ModelArray(self)
-          const_set :Array, klass
-        end
       end
 
       private

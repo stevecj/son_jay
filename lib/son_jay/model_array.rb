@@ -9,18 +9,11 @@ module SonJay
   end
 
   class ModelArray
+    include ActsAsModel
     extend Forwardable
 
     class << self
       attr_accessor :entry_class
-
-      def array_class
-        #TODO: Factor out duplication w/ ObjectModel::array_class
-        @array_class ||= begin
-          klass = SonJay::ModelArray(self)
-          const_set :Array, klass
-        end
-      end
     end
 
     def initialize
