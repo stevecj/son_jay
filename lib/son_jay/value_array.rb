@@ -6,8 +6,7 @@ module SonJay
       self
     end
 
-    def load_data(data)
-      replace data
-    end
+    alias load_data replace
+
   end
 end

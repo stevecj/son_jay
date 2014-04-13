@@ -7,6 +7,13 @@ module SonJay
 
     module ClassBehavior
 
+      def json_create(json)
+        data = JSON.parse( json )
+        instance = new
+        instance.sonj_content.load_data data
+        instance
+      end
+
       def array_class
         @array_class ||= begin
           klass = SonJay::ModelArray(self)

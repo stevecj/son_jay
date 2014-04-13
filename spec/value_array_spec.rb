@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe SonJay::ValueArray do
+  it "is array-like" do
+    expect( subject.to_ary ).to eq( subject )
+    expect( subject << 1 << 2 ).to eq( [1, 2] )
+  end
 
   describe '#sonj_content' do
     it "returns the instance itself" do

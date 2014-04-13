@@ -9,13 +9,6 @@ module SonJay
 
     class << self
 
-      def json_create(json)
-        data = JSON.parse( json )
-        instance = new
-        instance.sonj_content.load_data data
-        instance
-      end
-
       def properties(&property_initializations)
         @property_initializations = property_initializations
       end
