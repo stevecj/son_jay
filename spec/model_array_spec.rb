@@ -31,7 +31,6 @@ describe SonJay::ModelArray do
     describe '::array_class' do
       it "returns a model-array subclass for entries of this model-array type (nested array)" do
         array_class = subclass.array_class
-        puts array_class.ancestors
         expect( array_class.ancestors ).to include( SonJay::ModelArray )
         expect( array_class.entry_class ).to eq( subclass )
       end

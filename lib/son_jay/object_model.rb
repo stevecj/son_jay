@@ -1,3 +1,4 @@
+require 'set'
 require 'son_jay/object_model/properties'
 require 'son_jay/object_model/property_definition'
 
@@ -31,20 +32,26 @@ module SonJay
       end
 
       def property_definitions
-        @property_definitions ||= begin
-          definitions = []
+        @property_definitions ||= nil
+        return @property_definitions if @property_definitions
 
-          definer = PropertiesDefiner.new(definitions)
-          definer.instance_eval &@property_initializations
-          definitions.each do |d|
-            name = d.name
-            class_eval <<-CODE
-              def #{name}         ; sonj_content[#{name.inspect}]         ; end
-              def #{name}=(value) ; sonj_content[#{name.inspect}] = value ; end
-            CODE
-          end
-          definitions
+        definitions = []
+
+        definer = PropertiesDefiner.new(definitions)
+        definer.instance_eval &@property_initializations
+        @property_definitions = definitions
+
+        validate_model_dependencies!
+
+        definitions.each do |d|
+          name = d.name
+          class_eval <<-CODE
+            def #{name}         ; sonj_content[#{name.inspect}]         ; end
+            def #{name}=(value) ; sonj_content[#{name.inspect}] = value ; end
+          CODE
         end
+
+        @property_definitions
       end
 
       def array_class
@@ -54,6 +61,20 @@ module SonJay
         end
       end
 
+      private
+
+      def validate_model_dependencies!(dependants=Set.new)
+        raise InfiniteRegressError if dependants.include?(self)
+        dependants << self
+        hard_model_dependencies.each do |d|
+          next unless d.respond_to?(:validate_model_dependencies!, true)
+          d.send :validate_model_dependencies!, dependants
+        end
+      end
+
+      def hard_model_dependencies
+        property_definitions.map(&:model_class).compact.uniq
+      end
     end
 
     attr_reader :sonj_content

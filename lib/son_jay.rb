@@ -5,4 +5,5 @@ require 'son_jay/model_array'
 require 'son_jay/value_array'
 
 module SonJay
+  class InfiniteRegressError < StandardError ; end
 end

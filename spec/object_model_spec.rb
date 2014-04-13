@@ -133,4 +133,47 @@ describe SonJay::ObjectModel do
 
   end
 
+  describe "a subclass with a directly self-referential property specification" do
+    let!( :subclass ) {
+      cc = lambda{ component }
+      Class.new(described_class) do
+        properties do ; property :component, model: cc.call ; end
+      end
+    }
+
+    let!( :component ) {
+      cc = lambda{ sub_component }
+      Class.new(described_class) do
+        properties do ; property :component, model: cc.call ; end
+      end
+    }
+
+    let!( :sub_component ) {
+      cc = lambda{ subclass }
+      Class.new(described_class) do
+        properties do ; property :component, model: cc.call ; end
+      end
+    }
+
+    it "raises an infinte regress error when property_definitions are resolved" do
+      expect{ subclass.property_definitions }.to raise_exception( SonJay::InfiniteRegressError )
+    end
+  end
+
+  describe "a subclass with an indirectly self-referential property specification" do
+    let!( :subclass ) {
+      Class.new(described_class) do
+        this_model_class = self
+        properties do
+          property :a
+          property :b, model: this_model_class
+        end
+      end
+    }
+
+    it "raises an infinte regress error when property_definitions are resolved" do
+      expect{ subclass.property_definitions }.to raise_exception( SonJay::InfiniteRegressError )
+    end
+  end
+
 end
