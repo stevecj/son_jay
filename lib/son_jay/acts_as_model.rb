@@ -7,7 +7,7 @@ module SonJay
 
     module ClassBehavior
 
-      def json_create(json)
+      def parse_json(json)
         data = JSON.parse( json )
         instance = new
         instance.sonj_content.load_data data

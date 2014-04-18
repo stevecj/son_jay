@@ -21,9 +21,9 @@ describe SonJay::ActsAsModel do
       end
     }
 
-    describe '::json_create' do
+    describe '::parse_json' do
       it "returns a new instance with parsed JSON data loaded into its #sonj_content object" do
-        instance = klass.json_create( '{"hello": "world"}' )
+        instance = klass.parse_json( '{"hello": "world"}' )
         loaded_data = instance.sonj_content.loaded_data
         expect( loaded_data ).to eq( {'hello' => 'world'} )
       end

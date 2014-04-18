@@ -27,7 +27,7 @@ Feature: Parsing data from JSON
       """
     When the JSON is parsed to a model instance as:
       """
-      instance = SimpleObjectModel.json_create( json )
+      instance = SimpleObjectModel.parse_json( json )
       """
     Then the instance attributes are as follows:
       | id  | name       | published | featured | owner |
@@ -67,7 +67,7 @@ Feature: Parsing data from JSON
       """
     When the JSON is parsed to a model instance as:
       """
-      instance = ThingModel.json_create( json )
+      instance = ThingModel.parse_json( json )
       """
     Then the instance attributes are as follows:
       | name      | details.color | details.size |
@@ -94,7 +94,7 @@ Feature: Parsing data from JSON
       """
     When the JSON is parsed to a model instance as:
       """
-      instance = ContestantModel.json_create( json )
+      instance = ContestantModel.parse_json( json )
       """
     Then the instance attributes are as follows:
       | name   | scores[0] | scores[1] | scores[2] |
@@ -127,7 +127,7 @@ Feature: Parsing data from JSON
       """
     When the JSON is parsed to a model instance as:
       """
-      instance = TicTacToeModel.json_create( json )
+      instance = TicTacToeModel.parse_json( json )
       """
     Then the instance attributes are as follows:
       | rows[0][0]   | rows[0][1] | rows[0][2] |
@@ -177,7 +177,7 @@ Feature: Parsing data from JSON
       """
     When the JSON is parsed to a model instance as:
       """
-      instance = ListModel.json_create( json )
+      instance = ListModel.parse_json( json )
       """
     Then the instance attributes are as follows:
       | name        | items[0].description | items[0].priority | items[1].description | items[1].priority |
@@ -216,7 +216,7 @@ Feature: Parsing data from JSON
       """
     When the JSON is parsed to a model instance as:
       """
-      instance = TableModel.json_create( json )
+      instance = TableModel.parse_json( json )
       """
     Then the instance attributes are as follows:
       | rows[0][0].is_head | rows[0][0].value | rows[0][1].is_head | rows[0][1].value |
