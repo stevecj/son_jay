@@ -36,6 +36,12 @@ module SonJay
         @property_definitions
       end
 
+      def assimilate(source_obj)
+        instance = new
+        instance.sonj_content.assimilate source_obj
+        instance
+      end
+
       private
 
       def validate_model_dependencies!(dependants=Set.new)

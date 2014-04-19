@@ -80,7 +80,7 @@ describe SonJay::ObjectModel::Properties do
     end
   end
 
-  describe "load_property" do
+  describe "#load_property" do
     it "writes to existing value properties" do
       subject.load_property( 'bbb', 11 )
       subject.load_property( 'ccc', 12 )
@@ -108,7 +108,7 @@ describe SonJay::ObjectModel::Properties do
     end
   end
 
-  describe "load_data" do
+  describe "#load_data" do
     it "populates property values from hash entries" do
       subject.load_data({
         'bbb' => 'abc' ,
@@ -119,6 +119,40 @@ describe SonJay::ObjectModel::Properties do
       expect( subject['bbb'] ).to eq( 'abc' )
       expect( subject['ccc'] ).to eq( false )
       expect( ddd_model_class.loaded_data ).to eq( 'something...' )
+    end
+  end
+
+  describe '#assimilate' do
+    it "populates value properties from source object's available attributes" do
+      source_obj = double( :source_obj, {
+        respond_to?: false ,
+        aaa:         123 ,
+        ccc:         456 ,
+      } )
+      source_obj.stub( :respond_to? ).with( 'aaa' ).and_return true
+      source_obj.stub( :respond_to? ).with( 'ccc' ).and_return true
+
+      subject.assimilate source_obj
+
+      expect( subject[:aaa] ).to eq( 123 )
+      expect( subject[:bbb] ).to be_nil
+      expect( subject[:ccc] ).to eq( 456 )
+    end
+  end
+
+  describe '#disseminate_to' do
+    it "populates available target attributes from value properties" do
+      subject[ :bbb ] = 123
+      subject[ :ccc ] = 456
+
+      target_obj = double( :target_obj, respond_to?: false )
+      target_obj.stub( :respond_to? ).with( 'bbb=' ).and_return true
+      target_obj.stub( :respond_to? ).with( 'ccc=' ).and_return true
+
+      expect( target_obj ).to receive( :bbb= ).with 123
+      expect( target_obj ).to receive( :ccc= ).with 456
+
+      subject.disseminate_to target_obj
     end
   end
 

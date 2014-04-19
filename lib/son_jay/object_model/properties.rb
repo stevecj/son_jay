@@ -65,6 +65,21 @@ module SonJay
         @data.to_json(*args)
       end
 
+      def assimilate(source_obj)
+        @data.each_key do |prop_name|
+          next unless source_obj.respond_to?(prop_name)
+          value = source_obj.public_send( prop_name )
+          self[prop_name] = value
+        end
+      end
+
+      def disseminate_to(target_obj)
+        @data.each do |prop_name, value|
+          setter_name = "#{prop_name}="
+          next unless target_obj.respond_to?( setter_name )
+          target_obj.public_send setter_name, value
+        end
+      end
     end
   end
 end

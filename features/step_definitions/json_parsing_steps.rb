@@ -12,6 +12,7 @@ When(/^the JSON is parsed to a model instance as:$/) do |code|
 end
 
 Then(/^the instance attributes are as follows:$/) do |table|
+  #TODO Factor out duplication with "the domain object attributes are as follows:"
   row_pairs = table.raw.each_slice(2)
   attribute_exprs = row_pairs.map( &:first ).reduce( :+ )
   expected_exprs  = row_pairs.map( &:last  ).reduce( :+ )

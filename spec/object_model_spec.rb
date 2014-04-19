@@ -7,7 +7,6 @@ describe SonJay::ObjectModel do
     describe '::array_class' do
       it "returns a model-array subclass for entries of this type" do
         array_class = subclass.array_class
-        puts array_class.ancestors
         expect( array_class.ancestors ).to include( SonJay::ModelArray )
         expect( array_class.entry_class ).to eq( subclass )
       end
