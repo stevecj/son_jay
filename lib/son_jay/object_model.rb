@@ -19,7 +19,7 @@ module SonJay
 
         definitions = []
 
-        definer = PropertiesDefiner.new(definitions)
+        definer = PropertiesDefiner.new( definitions )
         definer.instance_eval &@property_initializations
         @property_definitions = definitions
 
@@ -48,13 +48,13 @@ module SonJay
         raise InfiniteRegressError if dependants.include?(self)
         dependants << self
         hard_model_dependencies.each do |d|
-          next unless d.respond_to?(:validate_model_dependencies!, true)
+          next unless d.respond_to?( :validate_model_dependencies!, true )
           d.send :validate_model_dependencies!, dependants
         end
       end
 
       def hard_model_dependencies
-        property_definitions.map(&:model_class).compact.uniq
+        property_definitions.map( &:model_class ).compact.uniq
       end
     end
 
@@ -66,7 +66,7 @@ module SonJay
     end
 
     def to_json(*args)
-      sonj_content.to_json(*args)
+      sonj_content.to_json( *args )
     end
 
   end

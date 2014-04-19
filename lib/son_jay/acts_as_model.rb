@@ -16,7 +16,7 @@ module SonJay
 
       def array_class
         @array_class ||= begin
-          klass = SonJay::ModelArray(self)
+          klass = SonJay::ModelArray( self )
           const_set :Array, klass
         end
       end

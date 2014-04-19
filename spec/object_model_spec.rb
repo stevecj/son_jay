@@ -65,8 +65,8 @@ describe SonJay::ObjectModel do
 
         instance = subclass.parse_json( json )
 
-        expect( instance.abc ).to eq(  123  )
-        expect( instance.xyz ).to eq( 'XYZ' )
+        expect( instance.abc ).to eq( 123 )
+        expect( instance.xyz ).to eq('XYZ')
       end
     end
 
@@ -155,7 +155,8 @@ describe SonJay::ObjectModel do
     }
 
     it "raises an infinte regress error when property_definitions are resolved" do
-      expect{ subclass.property_definitions }.to raise_exception( SonJay::InfiniteRegressError )
+      expect{ subclass.property_definitions }.
+        to raise_exception( SonJay::InfiniteRegressError )
     end
   end
 
@@ -171,7 +172,8 @@ describe SonJay::ObjectModel do
     }
 
     it "raises an infinte regress error when property_definitions are resolved" do
-      expect{ subclass.property_definitions }.to raise_exception( SonJay::InfiniteRegressError )
+      expect{ subclass.property_definitions }.
+        to raise_exception( SonJay::InfiniteRegressError )
     end
   end
 

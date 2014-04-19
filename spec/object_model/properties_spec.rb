@@ -51,9 +51,9 @@ describe SonJay::ObjectModel::Properties do
 
     it "allows reading/writing by symbol or string for property name" do
       subject['aaa'] = 10
-      subject[:bbb]  = 11
+      subject[:bbb ] = 11
 
-      expect( subject[:aaa]  ).to eq( 10 )
+      expect( subject[:aaa ] ).to eq( 10 )
       expect( subject['bbb'] ).to eq( 11 )
     end
 

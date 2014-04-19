@@ -6,7 +6,7 @@ module SonJay
 
       def initialize(name, instruction = nil)
         @name        = name
-        @model_class = model_class_for_instruction(instruction)
+        @model_class = model_class_for_instruction( instruction )
       end
 
       private
@@ -14,8 +14,8 @@ module SonJay
       def model_class_for_instruction(instruction)
         if instruction.nil?
           nil
-        elsif instruction.respond_to?(:to_ary)
-          array_model_class(instruction)
+        elsif instruction.respond_to?( :to_ary )
+          array_model_class( instruction )
         elsif instruction.respond_to?( :new )
           instruction
         end
@@ -24,7 +24,7 @@ module SonJay
       private
 
       def array_model_class(instruction)
-        return instruction unless instruction.respond_to?(:to_ary)
+        return instruction unless instruction.respond_to?( :to_ary )
         return SonJay::ValueArray if instruction == []
 
         sub_instruction = instruction.first

@@ -20,7 +20,7 @@ describe SonJay::ModelArray do
     } }
     let( :entry_class ) { Class.new do
       class Content
-        def initialize( entry ) ; @entry = entry ; end
+        def initialize(entry) ; @entry = entry ; end
         def load_data(data) ; @entry.loaded_data = data ; end
       end
 

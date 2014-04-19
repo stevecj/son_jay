@@ -3,6 +3,7 @@ require 'forwardable'
 module SonJay
   class ObjectModel
     class Properties
+
       class NameError < KeyError
         def initialize(name)
           super "No such property name as %s" % name.inspect
@@ -49,8 +50,8 @@ module SonJay
 
       def load_property(name, value)
         name = "#{name}"
-        return unless @data.has_key?(name)
-        if @model_properties.include?(name)
+        return unless @data.has_key?( name )
+        if @model_properties.include?( name )
           @data[name].sonj_content.load_data value
         else
           @data[name] = value
@@ -62,12 +63,12 @@ module SonJay
       end
 
       def to_json(*args)
-        @data.to_json(*args)
+        @data.to_json( *args )
       end
 
       def assimilate(source_obj)
         @data.each_key do |prop_name|
-          next unless source_obj.respond_to?(prop_name)
+          next unless source_obj.respond_to?( prop_name )
           value = source_obj.public_send( prop_name )
           self[prop_name] = value
         end
