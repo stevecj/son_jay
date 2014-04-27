@@ -7,6 +7,21 @@ module SonJay
   class ObjectModel
     include ActsAsModel
 
+    attr_reader :sonj_content
+
+    def initialize
+      definitions = self.class.property_definitions
+      @sonj_content = ObjectModel::Properties.new( definitions )
+    end
+
+    def to_json(*args)
+      sonj_content.to_json( *args )
+    end
+
+    def disseminate_to(*args)
+      sonj_content.disseminate_to *args
+    end
+
     class << self
 
       def properties(&property_initializations)
@@ -56,17 +71,6 @@ module SonJay
       def hard_model_dependencies
         property_definitions.map( &:model_class ).compact.uniq
       end
-    end
-
-    attr_reader :sonj_content
-
-    def initialize
-      definitions = self.class.property_definitions
-      @sonj_content = ObjectModel::Properties.new( definitions )
-    end
-
-    def to_json(*args)
-      sonj_content.to_json( *args )
     end
 
   end

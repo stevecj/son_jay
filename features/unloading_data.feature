@@ -20,7 +20,7 @@ Feature: Unloading data after parsing
     And a domain object created as:
       """
       class SimpleDomainObjectModel <
-          Struct.new(:id, :name, :published, :featured, :owner)
+          Struct.new(:id, :caption, :published, :featured, :owner)
       end
       object = SimpleDomainObjectModel.new
       """
@@ -34,10 +34,14 @@ Feature: Unloading data after parsing
       """
     And data is disseminated to the domain object as:
       """
-      instance.sonj_content.disseminate_to object
+      instance.disseminate_to object, {
+        map: {
+          name: { to_attr: :caption }
+        }
+      }
       """
     Then the domain object attributes are as follows:
-      | id  | name       | published | featured | owner |
+      | id  | caption    | published | featured | owner |
       |  55 |  "Polygon" |  true     |  false   |  nil  |
 
   @wip
@@ -76,21 +80,23 @@ Feature: Unloading data after parsing
           Struct.new(:name, :details)
       end
       class DetailObjectModel <
-          Struct.new(:color, :size)
+          Struct.new(:colour, :size)
       end
       object = ThingSonjModel.new
       """
     And data is disseminated to the domain object as:
       """
-      instance.sonj_content.disseminate_to object, {
-        property_mappings: {
+      instance.disseminate_to object, {
+        map: {
           details: {
-            class:      DetailObjectModel,
-            value_args: [:color, :size],
+            class: DetailObjectModel,
+            mappings: {
+              color: { to_attr: :colour }
+            }
           }
         }
       }
       """
     Then the domain object attributes are as follows:
-      | name      | details.color | details.size |
-      |  "Cherry" |  "red"        |  "small"     |
+      | name      | details.colour | details.size |
+      |  "Cherry" |  "red"         |  "small"     |

@@ -124,13 +124,9 @@ describe SonJay::ObjectModel::Properties do
 
   describe '#assimilate' do
     it "populates value properties from source object's available attributes" do
-      source_obj = double( :source_obj, {
-        respond_to?: false ,
-        aaa:         123 ,
-        ccc:         456 ,
-      } )
-      source_obj.stub( :respond_to? ).with( 'aaa' ).and_return true
-      source_obj.stub( :respond_to? ).with( 'ccc' ).and_return true
+      source_obj =
+        Struct.new( :aaa, :ccc ).
+        new( 123, 456 )
 
       subject.assimilate source_obj
 
@@ -145,14 +141,31 @@ describe SonJay::ObjectModel::Properties do
       subject[ :bbb ] = 123
       subject[ :ccc ] = 456
 
-      target_obj = double( :target_obj, respond_to?: false )
-      target_obj.stub( :respond_to? ).with( 'bbb=' ).and_return true
-      target_obj.stub( :respond_to? ).with( 'ccc=' ).and_return true
-
-      expect( target_obj ).to receive( :bbb= ).with 123
-      expect( target_obj ).to receive( :ccc= ).with 456
+      target_obj = Struct.new( :bbb, :ccc ).new
 
       subject.disseminate_to target_obj
+
+      expect( target_obj.bbb ).to eq( 123 )
+      expect( target_obj.ccc ).to eq( 456 )
+    end
+
+    it "can map to specific taget attribute names" do
+      subject[ :aaa ] = 123
+      subject[ :bbb ] = 456
+      subject[ :ccc ] = 789
+
+      target_obj = Struct.new( :aaa, :vvv, :zzz ).new
+
+      subject.disseminate_to target_obj, {
+        map: {
+          bbb: { to_attr: :vvv },
+          ccc: { to_attr: :zzz },
+        }
+      }
+
+      expect( target_obj.aaa ).to eq( 123 )
+      expect( target_obj.vvv ).to eq( 456 )
+      expect( target_obj.zzz ).to eq( 789 )
     end
   end
 
