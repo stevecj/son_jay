@@ -75,15 +75,9 @@ module SonJay
       end
 
       def disseminate_to(target_obj, options={})
-        map = options[:map] || {}
-        @data.each do |prop_name, value|
-          map_opts = map[prop_name.to_sym] || {}
-          target_attr_name = map_opts[:to_attr] || prop_name
-          setter_name = "#{target_attr_name}="
-          next unless target_obj.respond_to?( setter_name )
-          target_obj.public_send setter_name, value
-        end
+        Disseminator.new(@data, target_obj, options).call
       end
+
     end
   end
 end

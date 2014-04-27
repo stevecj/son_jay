@@ -2,6 +2,7 @@ require 'set'
 require 'son_jay/object_model/properties'
 require 'son_jay/object_model/property_definition'
 require 'son_jay/object_model/properties_definer'
+require 'son_jay/object_model/disseminator'
 
 module SonJay
   class ObjectModel
