@@ -2,7 +2,6 @@ require 'set'
 require 'son_jay/object_model/properties'
 require 'son_jay/object_model/property_definition'
 require 'son_jay/object_model/properties_definer'
-require 'son_jay/object_model/disseminator'
 
 module SonJay
   class ObjectModel
@@ -17,10 +16,6 @@ module SonJay
 
     def to_json(*args)
       sonj_content.to_json( *args )
-    end
-
-    def disseminate_to(*args)
-      sonj_content.disseminate_to *args
     end
 
     class << self
@@ -50,12 +45,6 @@ module SonJay
         end
 
         @property_definitions
-      end
-
-      def assimilate(source_obj)
-        instance = new
-        instance.sonj_content.assimilate source_obj
-        instance
       end
 
       private
