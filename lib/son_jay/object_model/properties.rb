@@ -62,8 +62,9 @@ module SonJay
         @data.has_key?( "#{name}" )
       end
 
-      def to_json(*args)
-        @data.to_json( *args )
+      def to_json(options = ::JSON::State.new)
+        options = ::JSON::State.new(options) unless options.kind_of?(::JSON::State)
+        @data.to_json( options )
       end
 
     end
