@@ -27,8 +27,6 @@ module SonJay
         :values ,
       ]
 
-      def_delegator :@data, :has_key?, :has_name?
-
       def [](name)
         name = "#{name}"
         @data.fetch(name)
@@ -56,10 +54,6 @@ module SonJay
         else
           @data[name] = value
         end
-      end
-
-      def has_name?(name)
-        @data.has_key?( "#{name}" )
       end
 
       def to_json(options = ::JSON::State.new)

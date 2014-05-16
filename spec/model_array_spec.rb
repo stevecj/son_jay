@@ -65,5 +65,11 @@ describe SonJay::ModelArray do
         expect( instance[1].loaded_data ).to eq( 'entry 1 data' )
       end
     end
+
+    describe '#sonj_content' do
+      it "returns the model array" do
+        expect( subject.sonj_content ).to equal( subject )
+      end
+    end
   end
 end

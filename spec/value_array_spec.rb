@@ -22,4 +22,16 @@ describe SonJay::ValueArray do
       expect( subject.entries ).to eq( [7, 8, 9] )
     end
   end
+
+  describe '#to_json' do
+    it "returns a JSON representation of the array w/ values" do
+      subject.replace( [1, 2, 'three'] )
+
+      actual_json = subject.to_json
+
+      parsed_json = JSON.parse( actual_json )
+      expect( parsed_json ).to eq( [1, 2, 'three'] )
+    end
+  end
+
 end
