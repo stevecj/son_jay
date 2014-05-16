@@ -2,132 +2,157 @@ require 'spec_helper'
 
 describe SonJay::ObjectModel do
 
-  describe "a subclass that defines value properties" do
+  describe "a subclass that defines (value and modeled-object) properties" do
+
+    let( :model_class     ) { subject_module::RootModel }
+    let( :model_instance  ) { model_class.new }
+    let( :detail_xy_class ) { subject_module::DetailXY }
+
+    let( :subject_module ) {
+      mod = Module.new
+      mod::M = mod
+
+      module mod::M
+
+        class RootModel < SonJay::ObjectModel
+          class << self
+            def properties_block_called_count
+              @properties_block_called_count ||= 0
+            end
+            attr_writer :properties_block_called_count
+          end
+
+          properties do
+            RootModel.properties_block_called_count += 1
+            property :aaa
+            property :bbb
+            property :detail_xy , model: DetailXY
+            property :detail_z  , model: DetailZ
+          end
+        end
+
+        class DetailXY < SonJay::ObjectModel
+          properties do
+            property :xxx
+            property :yyy
+          end
+        end
+
+        class DetailZ < SonJay::ObjectModel
+          properties do
+            property :zzz
+          end
+        end
+
+      end
+
+      mod
+    }
+
+    it "does not immediately invoke its properties block when declared" do
+      expect( model_class.properties_block_called_count ).
+        to eq( 0 )
+    end
 
     describe '::array_class' do
       it "returns a model-array subclass for entries of this type" do
-        array_class = subclass.array_class
+        array_class = model_class.array_class
         expect( array_class.ancestors ).to include( SonJay::ModelArray )
-        expect( array_class.entry_class ).to eq( subclass )
+        expect( array_class.entry_class ).to eq( model_class )
       end
     end
 
-    let( :subclass ) {
-      Class.new(described_class) do
-        properties do
-          property :abc
-          property :xyz
-        end
-      end
-    }
-
     describe "#sonj_content" do
-      it "has name-indexed settable/gettable values for defined properties" do
-        instance = subclass.new
+      let( :sonj_content ) { model_instance.sonj_content }
 
-        content = instance.sonj_content
-        expect( content.length ).to eq( 2 )
-
-        content[:abc] = 1
-        content[:xyz] = 'XYZ'
-
-        expect( content[:abc] ).to eq( 1 )
-        expect( content[:xyz] ).to eq( 'XYZ' )
+      it "has number of entries equal to number of defined properties" do
+        expect( sonj_content.length ).to eq( 4 )
       end
+
+      it "has name-indexed settable/gettable value properties by string or symbol" do
+        sonj_content[ :aaa  ] =  1
+        sonj_content[ 'bbb' ] = 'XYZ'
+
+        expect( sonj_content[ 'aaa' ] ).to eq(  1    )
+        expect( sonj_content[ :bbb  ] ).to eq( 'XYZ' )
+      end
+
+      it "has nil defaults for value properties" do
+        expect( sonj_content[ 'aaa' ] ).to be_nil
+        expect( sonj_content[ :bbb  ] ).to be_nil
+      end
+
+      it "has name-indexed gettable values for defined modeled-object properties by string or symbol" do
+        expect( sonj_content['detail_xy'] ).
+          to be_kind_of( subject_module::DetailXY )
+        expect( sonj_content[:detail_z] ).
+          to be_kind_of( subject_module::DetailZ )
+      end
+
+      it "rejects access to an undefined property" do
+        expect{ sonj_content['qq'] }.to raise_exception(
+          described_class::Properties::NameError
+        )
+      end
+
     end
 
     it "has direct property accessor methods for each property" do
-      instance = subclass.new
-      instance.abc, instance.xyz = 11, 22
-
-      expect( [instance.abc, instance.xyz] ).to eq( [11, 22] )
+      model_instance.aaa, model_instance.bbb = 11, 22
+      expect( [model_instance.aaa, model_instance.bbb] ).to eq( [11, 22] )
+      expect( model_instance.detail_xy ).
+        to be_kind_of( subject_module::DetailXY )
+      expect( model_instance.detail_z ).
+        to be_kind_of( subject_module::DetailZ )
     end
 
-    it "serializes to a JSON object representation w/ property values" do
-      instance = subclass.new
-      instance.abc, instance.xyz = 'ABC', nil
+    it "serializes to a JSON object representation w/ value properties" do
+      instance = detail_xy_class.new
+      instance.xxx, instance.yyy = 'ABC', nil
 
       actual_json = instance.to_json
 
       actual_data = JSON.parse( actual_json)
-      expected_data = {'abc' => 'ABC', 'xyz' => nil}
+      expected_data = {'xxx' => 'ABC', 'yyy' => nil}
       expect( actual_data ).to eq( expected_data )
     end
 
-    describe '::parse_json' do
-      it "creates an instance with properties filled in from parsed JSON" do
-        json = <<-JSON
-          {
-            "abc":  123  ,
-            "xyz": "XYZ"
-          }
-        JSON
+    it "serializes to a JSON object representation w/ value and object properties" do
+      model_instance.aaa = 1
+      model_instance.bbb = 2
+      model_instance.detail_xy.xxx = 11
+      model_instance.detail_xy.yyy = 12
+      model_instance.detail_z.zzz  = 21
 
-        instance = subclass.parse_json( json )
+      actual_json = model_instance.to_json
 
-        expect( instance.abc ).to eq( 123 )
-        expect( instance.xyz ).to eq('XYZ')
-      end
+      actual_data = JSON.parse( actual_json)
+      expected_data = {
+        'aaa' => 1 ,
+        'bbb' => 2 ,
+        'detail_xy' => { 'xxx' => 11, 'yyy' => 12 } ,
+        'detail_z'  => { 'zzz' => 21 } ,
+      }
+      expect( actual_data ).to eq( expected_data )
     end
 
-  end
+    it "parses from JSON to an instance with properties filled in" do
+      json = <<-JSON
+        {
+          "aaa":  123  ,
+          "bbb": "XYZ" ,
+          "detail_xy": { "xxx": "x", "yyy": "y" } ,
+          "detail_z":  { "zzz": "z" }
+        }
+      JSON
 
-  describe "a subclass that defines value and modeled-object properties" do
-    let( :subclass ) {
-      dmc_1, dmc_2 = detail_model_class_1, detail_model_class_2
-      pbcs = property_block_calls
-      Class.new(described_class) do
-        properties do
-          pbcs << 1
-          property :a
-          property :obj_1, model: dmc_1
-          property :obj_2, model: dmc_2
-        end
-      end
-    }
+      instance = model_class.parse_json( json )
 
-    let( :property_block_calls ) { [] }
-
-    let( :detail_model_class_1 ) {
-      Class.new(described_class) do
-        properties do
-          property :aaa
-          property :bbb
-        end
-      end
-    }
-
-    let( :detail_model_class_2 ) {
-      Class.new(described_class) do
-        properties do
-          property :ccc
-        end
-      end
-    }
-
-    it "does not immediately invoke its properties block when declared" do
-      _ = subclass
-      expect( property_block_calls ).to be_empty
-    end
-
-    describe "#sonj_content" do
-      it "has an entry for each defined property" do
-        content = subclass.new.sonj_content
-        expect( content.length ).to eq( 3 )
-      end
-    end
-
-    describe "#sonj_content" do
-      it "has name-indexed settable/gettable values for defined value properties" do
-        content = subclass.new.sonj_content
-        content[:a] = 1
-        expect( content[:a] ).to eq( 1 )
-      end
-
-      it "has name-indexed gettable values for defined modeled-object properties" do
-        content = subclass.new.sonj_content
-        expect( content[:obj_1] ).to be_kind_of( detail_model_class_1 )
-      end
+      expect( instance.aaa ).to eq( 123 )
+      expect( instance.bbb ).to eq('XYZ')
+      expect( instance.detail_xy.xxx ).to eq('x')
+      expect( instance.detail_xy.yyy ).to eq('y')
+      expect( instance.detail_z.zzz  ).to eq('z')
     end
 
   end
