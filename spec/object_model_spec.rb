@@ -155,6 +155,24 @@ describe SonJay::ObjectModel do
       expect( instance.detail_z.zzz  ).to eq('z')
     end
 
+    context "with more properties added via an additional ::properies block" do
+      before do
+
+        model_class.class_eval do
+          properties do
+            property :mmm
+            property :nnn
+          end
+        end
+
+      end
+
+      it "has number of entries equal to total number of defined properties" do
+        expect( model_instance.sonj_content.length ).to eq( 6 )
+      end
+      
+    end
+
   end
 
   describe "a subclass with a directly self-referential property specification" do

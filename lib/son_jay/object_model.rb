@@ -21,7 +21,8 @@ module SonJay
     class << self
 
       def properties(&property_initializations)
-        @property_initializations = property_initializations
+        @property_initializations =
+          Array(@property_initializations) << property_initializations
       end
 
       def property_definitions
@@ -31,7 +32,9 @@ module SonJay
         definitions = []
 
         definer = PropertiesDefiner.new( definitions )
-        definer.instance_eval &@property_initializations
+        (@property_initializations || []).each do |pi|
+          definer.instance_eval &pi
+        end
         @property_definitions = definitions
 
         validate_model_dependencies!
