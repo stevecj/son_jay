@@ -89,9 +89,43 @@ describe SonJay::ObjectModel do
           to be_kind_of( subject_module::DetailZ )
       end
 
-      it "rejects access to an undefined property" do
-        expect{ sonj_content['qq'] }.to raise_exception(
-          described_class::Properties::NameError
+      it "rejects assignment of an undefined property" do
+        expect{ sonj_content['qq'] = 0 }.to raise_exception(
+          SonJay::PropertyNameError
+        )
+      end
+
+      it "returns nil for name-indexed access to a non-existent property" do
+        expect( sonj_content[ 'qq' ] ).to be_nil
+        expect( sonj_content[ :rr  ] ).to be_nil
+      end
+
+      it "has fetchable value properties by name string or symbol" do
+        sonj_content[ :aaa  ] =  1
+        sonj_content[ 'bbb' ] = 'XYZ'
+
+        expect( sonj_content.fetch( 'aaa' ) ).to eq(  1    )
+        expect( sonj_content.fetch( :bbb  ) ).to eq( 'XYZ' )
+      end
+
+      it "has nil defaults for value property fetches" do
+        expect( sonj_content.fetch( 'aaa' ) ).to be_nil
+        expect( sonj_content.fetch( :bbb  ) ).to be_nil
+      end
+
+      it "has name-indexed fetchable values for defined modeled-object properties by string or symbol" do
+        expect( sonj_content.fetch('detail_xy') ).
+          to be_kind_of( subject_module::DetailXY )
+        expect( sonj_content.fetch(:detail_z) ).
+          to be_kind_of( subject_module::DetailZ )
+      end
+
+      it "rejects fetch of an undefined property by name" do
+        expect{ sonj_content.fetch('qq') }.to raise_exception(
+          SonJay::PropertyNameError
+        )
+        expect{ sonj_content.fetch(:rr) }.to raise_exception(
+          SonJay::PropertyNameError
         )
       end
 

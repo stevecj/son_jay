@@ -6,5 +6,14 @@ require 'son_jay/model_array'
 require 'son_jay/value_array'
 
 module SonJay
-  class InfiniteRegressError < StandardError ; end
+
+  class InfiniteRegressError < StandardError
+  end
+
+  class PropertyNameError < KeyError
+    def initialize(name)
+      super "No such property name as %s" % name.inspect
+    end
+  end
+
 end

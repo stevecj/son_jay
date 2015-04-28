@@ -3,13 +3,6 @@ require 'forwardable'
 module SonJay
   class ObjectModel
     class Properties
-
-      class NameError < KeyError
-        def initialize(name)
-          super "No such property name as %s" % name.inspect
-        end
-      end
-
       extend Forwardable
 
       def initialize(property_definitions)
@@ -29,14 +22,19 @@ module SonJay
 
       def [](name)
         name = "#{name}"
+        @data[name]
+      end
+
+      def fetch(name)
+        name = "#{name}"
         @data.fetch(name)
       rescue KeyError
-        raise NameError.new(name)
+        raise PropertyNameError.new(name)
       end
 
       def []=(name, value)
         name = "#{name}"
-        raise NameError.new(name) unless @data.has_key?(name)
+        raise PropertyNameError.new(name) unless @data.has_key?(name)
         @data[name] = value
       end
 
