@@ -140,6 +140,27 @@ describe SonJay::ObjectModel do
         to be_kind_of( subject_module::DetailZ )
     end
 
+    it "has name-index acces to each property" do
+      model_instance.aaa    = 11
+      model_instance['bbb'] = 22
+      expect( model_instance[:aaa] ).to eq( 11 )
+      expect( model_instance.bbb   ).to eq( 22 )
+      expect( model_instance[:detail_xy] ).
+        to be_kind_of( subject_module::DetailXY )
+      expect( model_instance['detail_z'] ).
+        to be_kind_of( subject_module::DetailZ )
+    end
+
+    it "has name-index fetchable access to each property" do
+      model_instance.aaa, model_instance.bbb = 11, 22
+      expect( model_instance.fetch( :aaa  ) ).to eq( 11 )
+      expect( model_instance.fetch( 'bbb' ) ).to eq( 22 )
+      expect( model_instance.fetch(:detail_xy) ).
+        to be_kind_of( subject_module::DetailXY )
+      expect( model_instance.fetch('detail_z') ).
+        to be_kind_of( subject_module::DetailZ )
+    end
+
     it "serializes to a JSON object representation w/ value properties" do
       instance = detail_xy_class.new
       instance.xxx, instance.yyy = 'ABC', nil

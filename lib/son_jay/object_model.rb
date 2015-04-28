@@ -1,4 +1,5 @@
 require 'set'
+require 'forwardable'
 require 'son_jay/object_model/properties'
 require 'son_jay/object_model/property_definition'
 require 'son_jay/object_model/properties_definer'
@@ -6,6 +7,7 @@ require 'son_jay/object_model/properties_definer'
 module SonJay
   class ObjectModel
     include ActsAsModel
+    extend Forwardable
 
     attr_reader :sonj_content
 
@@ -17,6 +19,8 @@ module SonJay
     def to_json(*args)
       sonj_content.to_json( *args )
     end
+
+    def_delegators :sonj_content, :[]=, :[], :fetch
 
     class << self
 
