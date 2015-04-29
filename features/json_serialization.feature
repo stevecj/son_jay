@@ -258,3 +258,40 @@ Feature: Serializing data to JSON
           ]
       }
       """
+
+  Scenario: Object data with extra properties
+    Given an object model defined as:
+      """
+      class SimpleObjectModel < SonJay::ObjectModel
+        allow_extras
+
+        properties do
+          property :id
+          property :name
+        end
+      end
+      """
+    And a model instance defined as:
+      """
+      instance = SimpleObjectModel.new
+      """
+    When the instance's property values are assigned as:
+      """
+      instance.id   =  55
+      instance.name = "Polygon"
+      instance['published'] =  true
+      instance['featured']  =  false
+      """
+    And the model is serialized to JSON as:
+      """
+      json = instance.to_json
+      """
+    Then the resulting JSON is equivalent to:
+      """
+      {
+          "id"        :  55 ,
+          "name"      : "Polygon" ,
+          "published" :  true ,
+          "featured"  :  false
+      }
+      """
