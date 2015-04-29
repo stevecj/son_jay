@@ -144,7 +144,7 @@ describe SonJay::ObjectModel do
         end
 
         it "allows access to extra properties object" do
-          expect( sonj_content.extra ).to eq( {} )
+          expect( sonj_content.extra.to_h ).to eq( {} )
         end
       end
 
@@ -204,7 +204,7 @@ describe SonJay::ObjectModel do
       it "allows name-index writing of arbitrary extra properties" do
         model_instance[ 'qqq' ] = 111
         model_instance[ :rrr  ] = 222
-        expect( model_instance.sonj_content.extra ).
+        expect( model_instance.sonj_content.extra.to_h ).
           to eq( 'qqq' => 111, 'rrr' => 222 )
       end
 

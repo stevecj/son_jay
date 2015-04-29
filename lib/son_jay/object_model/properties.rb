@@ -28,19 +28,19 @@ module SonJay
       ]
 
       def [](name)
-        name = "#{name}"
+        name = "#{name}" unless String === name
         @data[name]
       end
 
       def fetch(name)
-        name = "#{name}"
+        name = "#{name}" unless String === name
         @data.fetch(name)
       rescue KeyError
         raise PropertyNameError.new(name)
       end
 
       def []=(name, value)
-        name = "#{name}"
+        name = "#{name}" unless String === name
         raise PropertyNameError.new(name) unless @data.has_key?(name)
         @data[name] = value
       end
@@ -52,7 +52,7 @@ module SonJay
       end
 
       def load_property(name, value)
-        name = "#{name}"
+        name = "#{name}" unless String === name
         return unless @data.has_key?( name )
         if @model_properties.include?( name )
           @data[name].sonj_content.load_data value
@@ -63,14 +63,13 @@ module SonJay
 
       def extra
         raise SonJay::DisabledMethodError unless extra_allowed?
-        #TODO: Enforce use of string keys.
-        @extra ||= {}
+        @extra ||= ObjectModel::ExtraData.new
       end
 
       def to_json(options = ::JSON::State.new)
         options = ::JSON::State.new(options) unless options.kind_of?(::JSON::State)
         all_data = @data
-        all_data = all_data.merge( extra ) if extra_allowed? && (! extra.empty? )
+        all_data = extra.hash_merge( all_data ) if extra_allowed? && (! extra.empty? )
         all_data.to_json( options )
       end
 
