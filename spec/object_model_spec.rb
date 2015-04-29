@@ -180,6 +180,73 @@ describe SonJay::ObjectModel do
         to be_kind_of( subject_module::DetailZ )
     end
 
+    it "serializes to a JSON object representation w/ value properties" do
+      instance = detail_xy_class.new
+      instance.xxx, instance.yyy = 'ABC', nil
+
+      actual_json = instance.to_json
+
+      actual_data = JSON.parse( actual_json)
+      expected_data = {'xxx' => 'ABC', 'yyy' => nil}
+      expect( actual_data ).to eq( expected_data )
+    end
+
+    it "serializes to a JSON object representation w/ value and object properties" do
+      model_instance.aaa = 1
+      model_instance.bbb = 2
+      model_instance.detail_xy.xxx = 11
+      model_instance.detail_xy.yyy = 12
+      model_instance.detail_z.zzz  = 21
+
+      actual_json = model_instance.to_json
+
+      actual_data = JSON.parse( actual_json)
+      expected_data = {
+        'aaa' => 1 ,
+        'bbb' => 2 ,
+        'detail_xy' => { 'xxx' => 11, 'yyy' => 12 } ,
+        'detail_z'  => { 'zzz' => 21 } ,
+      }
+      expect( actual_data ).to eq( expected_data )
+    end
+
+    it "parses from JSON to an instance with properties filled in" do
+      json = <<-JSON
+        {
+          "aaa":  123  ,
+          "bbb": "XYZ" ,
+          "detail_xy": { "xxx": "x", "yyy": "y" } ,
+          "detail_z":  { "zzz": "z" }
+        }
+      JSON
+
+      instance = model_class.parse_json( json )
+
+      expect( instance.aaa ).to eq( 123 )
+      expect( instance.bbb ).to eq('XYZ')
+      expect( instance.detail_xy.xxx ).to eq('x')
+      expect( instance.detail_xy.yyy ).to eq('y')
+      expect( instance.detail_z.zzz  ).to eq('z')
+    end
+
+    context "with more properties added via an additional ::properies block" do
+      before do
+
+        model_class.class_eval do
+          properties do
+            property :mmm
+            property :nnn
+          end
+        end
+
+      end
+
+      it "has number of entries equal to total number of defined properties" do
+        expect( model_instance.sonj_content.length ).to eq( 6 )
+      end
+      
+    end
+
     context "with extras not allowed" do
       it "rejects name-index writing of arbitrary extra properties" do
         expect{ model_instance['qqq'] = 111 }.to raise_exception(
@@ -276,73 +343,6 @@ describe SonJay::ObjectModel do
         expect( instance['qqq'] ).to eq( 999 )
         expect( instance['rrr'] ).to eq( 'foo' => 'bar' )
       end
-    end
-
-    it "serializes to a JSON object representation w/ value properties" do
-      instance = detail_xy_class.new
-      instance.xxx, instance.yyy = 'ABC', nil
-
-      actual_json = instance.to_json
-
-      actual_data = JSON.parse( actual_json)
-      expected_data = {'xxx' => 'ABC', 'yyy' => nil}
-      expect( actual_data ).to eq( expected_data )
-    end
-
-    it "serializes to a JSON object representation w/ value and object properties" do
-      model_instance.aaa = 1
-      model_instance.bbb = 2
-      model_instance.detail_xy.xxx = 11
-      model_instance.detail_xy.yyy = 12
-      model_instance.detail_z.zzz  = 21
-
-      actual_json = model_instance.to_json
-
-      actual_data = JSON.parse( actual_json)
-      expected_data = {
-        'aaa' => 1 ,
-        'bbb' => 2 ,
-        'detail_xy' => { 'xxx' => 11, 'yyy' => 12 } ,
-        'detail_z'  => { 'zzz' => 21 } ,
-      }
-      expect( actual_data ).to eq( expected_data )
-    end
-
-    it "parses from JSON to an instance with properties filled in" do
-      json = <<-JSON
-        {
-          "aaa":  123  ,
-          "bbb": "XYZ" ,
-          "detail_xy": { "xxx": "x", "yyy": "y" } ,
-          "detail_z":  { "zzz": "z" }
-        }
-      JSON
-
-      instance = model_class.parse_json( json )
-
-      expect( instance.aaa ).to eq( 123 )
-      expect( instance.bbb ).to eq('XYZ')
-      expect( instance.detail_xy.xxx ).to eq('x')
-      expect( instance.detail_xy.yyy ).to eq('y')
-      expect( instance.detail_z.zzz  ).to eq('z')
-    end
-
-    context "with more properties added via an additional ::properies block" do
-      before do
-
-        model_class.class_eval do
-          properties do
-            property :mmm
-            property :nnn
-          end
-        end
-
-      end
-
-      it "has number of entries equal to total number of defined properties" do
-        expect( model_instance.sonj_content.length ).to eq( 6 )
-      end
-      
     end
 
   end
