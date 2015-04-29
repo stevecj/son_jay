@@ -57,19 +57,37 @@ module SonJay
       end
 
       def property_definitions
-        @property_definitions ||= nil
-        return @property_definitions if @property_definitions
+        @property_definitions ||= _evaluate_property_definitions
+      end
 
-        definitions = []
+      private
 
-        definer = PropertiesDefiner.new( definitions )
-        (@property_initializations || []).each do |pi|
-          definer.instance_eval &pi
+      def properties(&property_initializations)
+        _property_initializations << property_initializations
+      end
+
+      def allow_extras(allowed = true)
+        @extras_allowed = allowed
+      end
+
+      def _evaluate_property_definitions
+        @property_definitions = [].tap do |definitions|
+          definer = PropertiesDefiner.new( definitions )
+          _property_initializations.each do |pi|
+            definer.instance_eval &pi
+          end
         end
-        @property_definitions = definitions
 
         _validate_model_dependencies!
 
+        _apply_property_definitions property_definitions
+      end
+
+      def _property_initializations
+        @property_initializations ||= []
+      end
+
+      def _apply_property_definitions(definitions)
         definitions.each do |d|
           name = d.name
           class_eval <<-CODE
@@ -77,19 +95,6 @@ module SonJay
             def #{name}=(value) ; sonj_content[#{name.inspect}] = value ; end
           CODE
         end
-
-        @property_definitions
-      end
-
-      private
-
-      def properties(&property_initializations)
-        @property_initializations =
-          Array(@property_initializations) << property_initializations
-      end
-
-      def allow_extras(allowed = true)
-        @extras_allowed = allowed
       end
 
       def _validate_model_dependencies!(dependants=Set.new)
