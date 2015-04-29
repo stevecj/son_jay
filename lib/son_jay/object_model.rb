@@ -52,17 +52,8 @@ module SonJay
 
     class << self
 
-      def allow_extras(allowed = true)
-        @extras_allowed = allowed
-      end
-
       def extras_allowed?
         @extras_allowed ||= false
-      end
-
-      def properties(&property_initializations)
-        @property_initializations =
-          Array(@property_initializations) << property_initializations
       end
 
       def property_definitions
@@ -77,7 +68,7 @@ module SonJay
         end
         @property_definitions = definitions
 
-        validate_model_dependencies!
+        _validate_model_dependencies!
 
         definitions.each do |d|
           name = d.name
@@ -92,16 +83,25 @@ module SonJay
 
       private
 
-      def validate_model_dependencies!(dependants=Set.new)
+      def properties(&property_initializations)
+        @property_initializations =
+          Array(@property_initializations) << property_initializations
+      end
+
+      def allow_extras(allowed = true)
+        @extras_allowed = allowed
+      end
+
+      def _validate_model_dependencies!(dependants=Set.new)
         raise InfiniteRegressError if dependants.include?(self)
         dependants << self
-        hard_model_dependencies.each do |d|
-          next unless d.respond_to?( :validate_model_dependencies!, true )
-          d.send :validate_model_dependencies!, dependants
+        _hard_model_dependencies.each do |d|
+          next unless d.respond_to?( :_validate_model_dependencies!, true )
+          d.send :_validate_model_dependencies!, dependants
         end
       end
 
-      def hard_model_dependencies
+      def _hard_model_dependencies
         property_definitions.map( &:model_class ).compact.uniq
       end
     end
