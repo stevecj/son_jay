@@ -1,5 +1,4 @@
 require 'set'
-require 'forwardable'
 require 'son_jay/object_model/properties'
 require 'son_jay/object_model/property_definition'
 require 'son_jay/object_model/properties_definer'
@@ -8,7 +7,6 @@ require 'son_jay/object_model/extra_data'
 module SonJay
   class ObjectModel
     include ActsAsModel
-    extend Forwardable
 
     attr_reader :sonj_content
 
@@ -21,15 +19,26 @@ module SonJay
       sonj_content.to_json( *args )
     end
 
-    def_delegators :sonj_content, :[], :fetch
-
     def []=(name, value)
       target = sonj_content
       if self.class.extras_allowed?
         name = "#{name}" unless String === name
         target = sonj_content.extra unless sonj_content.model_properties.include?(name)
       end
-      target[name] = value
+      target[ name ] = value
+    end
+
+    def [](name)
+      source = sonj_content
+      if self.class.extras_allowed?
+        name = "#{name}" unless String === name
+        source = sonj_content.extra unless sonj_content.model_properties.include?(name)
+      end
+      source[ name ]
+    end
+
+    def fetch(name)
+      sonj_content.fetch( name )
     end
 
     class << self

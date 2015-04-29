@@ -180,7 +180,7 @@ describe SonJay::ObjectModel do
         to be_kind_of( subject_module::DetailZ )
     end
 
-    context "without extras allowed" do
+    context "with extras not allowed" do
       it "rejects name-index writing of arbitrary extra properties" do
         expect{ model_instance['qqq'] = 111 }.to raise_exception(
           SonJay::PropertyNameError
@@ -188,6 +188,27 @@ describe SonJay::ObjectModel do
         expect{ model_instance[:rrr] = 222 }.to raise_exception(
           SonJay::PropertyNameError
         )
+      end
+
+      it "parses from JSON with extra properties to an instance with defined properties filled in" do
+        json = <<-JSON
+          {
+            "aaa":  123  ,
+            "bbb": "XYZ" ,
+            "detail_xy": { "xxx": "x", "yyy": "y" } ,
+            "detail_z":  { "zzz": "z" },
+            "qqq": 999,
+            "rrr": { "foo": "bar" }
+          }
+        JSON
+
+        instance = model_class.parse_json( json )
+
+        expect( instance.aaa ).to eq( 123 )
+        expect( instance.bbb ).to eq('XYZ')
+        expect( instance.detail_xy.xxx ).to eq('x')
+        expect( instance.detail_xy.yyy ).to eq('y')
+        expect( instance.detail_z.zzz  ).to eq('z')
       end
     end
 
@@ -208,7 +229,14 @@ describe SonJay::ObjectModel do
           to eq( 'qqq' => 111, 'rrr' => 222 )
       end
 
-      it "serializes to a JSON object representation w/ value properties and extras" do
+      it "allows name-index reading of arbitrary extra properties" do
+        model_instance.sonj_content.extra[ 'qqq' ] = 111
+        model_instance.sonj_content.extra[ :rrr  ] = 222
+        expect( model_instance[ :qqq  ] ).to eq( 111 )
+        expect( model_instance[ 'rrr' ] ).to eq( 222 )
+      end
+
+      it "serializes to a JSON object representation w/ properties and extras" do
         instance = detail_xy_class.new
         instance.xxx, instance.yyy = 'ABC', nil
         instance[:qqq] = 111
@@ -224,6 +252,29 @@ describe SonJay::ObjectModel do
           'rrr' => 222
         }
         expect( actual_data ).to eq( expected_data )
+      end
+
+      it "parses from JSON to an instance with properties and extras filled in" do
+        json = <<-JSON
+          {
+            "aaa":  123  ,
+            "bbb": "XYZ" ,
+            "detail_xy": { "xxx": "x", "yyy": "y" } ,
+            "detail_z":  { "zzz": "z" },
+            "qqq": 999,
+            "rrr": { "foo": "bar" }
+          }
+        JSON
+
+        instance = model_class.parse_json( json )
+
+        expect( instance.aaa ).to eq( 123 )
+        expect( instance.bbb ).to eq('XYZ')
+        expect( instance.detail_xy.xxx ).to eq('x')
+        expect( instance.detail_xy.yyy ).to eq('y')
+        expect( instance.detail_z.zzz  ).to eq('z')
+        expect( instance['qqq'] ).to eq( 999 )
+        expect( instance['rrr'] ).to eq( 'foo' => 'bar' )
       end
     end
 

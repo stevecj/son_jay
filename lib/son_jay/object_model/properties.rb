@@ -53,11 +53,14 @@ module SonJay
 
       def load_property(name, value)
         name = "#{name}" unless String === name
-        return unless @data.has_key?( name )
-        if @model_properties.include?( name )
-          @data[name].sonj_content.load_data value
-        else
-          @data[name] = value
+        if @data.has_key?( name )
+          if @model_properties.include?( name )
+            @data[name].sonj_content.load_data value
+          else
+            @data[name] = value
+          end
+        elsif extra_allowed?
+          extra[ name ] = value
         end
       end
 
