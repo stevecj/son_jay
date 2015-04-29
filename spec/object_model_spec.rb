@@ -129,6 +129,25 @@ describe SonJay::ObjectModel do
         )
       end
 
+      context "without extras allowed" do
+        it "rejects access to extra properties object" do
+          expect{ sonj_content.extra }.
+            to raise_exception( SonJay::DisabledMethodError )
+        end
+      end
+
+      context "with extras allowed" do
+        before do
+          model_class.class_eval do
+            allow_extras
+          end
+        end
+
+        it "allows access to extra properties object" do
+          expect( sonj_content.extra ).to eq( {} )
+        end
+      end
+
     end
 
     it "has direct property accessor methods for each property" do
@@ -159,6 +178,53 @@ describe SonJay::ObjectModel do
         to be_kind_of( subject_module::DetailXY )
       expect( model_instance.fetch('detail_z') ).
         to be_kind_of( subject_module::DetailZ )
+    end
+
+    context "without extras allowed" do
+      it "rejects name-index writing of arbitrary extra properties" do
+        expect{ model_instance['qqq'] = 111 }.to raise_exception(
+          SonJay::PropertyNameError
+        )
+        expect{ model_instance[:rrr] = 222 }.to raise_exception(
+          SonJay::PropertyNameError
+        )
+      end
+    end
+
+    context "with extras allowed" do
+      before do
+        model_class.class_eval do
+          allow_extras
+        end
+        detail_xy_class.instance_eval do
+          allow_extras
+        end
+      end
+
+      it "allows name-index writing of arbitrary extra properties" do
+        model_instance[ 'qqq' ] = 111
+        model_instance[ :rrr  ] = 222
+        expect( model_instance.sonj_content.extra ).
+          to eq( 'qqq' => 111, 'rrr' => 222 )
+      end
+
+      it "serializes to a JSON object representation w/ value properties and extras" do
+        instance = detail_xy_class.new
+        instance.xxx, instance.yyy = 'ABC', nil
+        instance[:qqq] = 111
+        instance[:rrr] = 222
+
+        actual_json = instance.to_json
+
+        actual_data = JSON.parse( actual_json)
+        expected_data = {
+          'xxx' => 'ABC',
+          'yyy' => nil,
+          'qqq' => 111,
+          'rrr' => 222
+        }
+        expect( actual_data ).to eq( expected_data )
+      end
     end
 
     it "serializes to a JSON object representation w/ value properties" do

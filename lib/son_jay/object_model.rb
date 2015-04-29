@@ -13,16 +13,33 @@ module SonJay
 
     def initialize
       definitions = self.class.property_definitions
-      @sonj_content = ObjectModel::Properties.new( definitions )
+      @sonj_content = ObjectModel::Properties.new( definitions, self.class.extras_allowed? )
     end
 
     def to_json(*args)
       sonj_content.to_json( *args )
     end
 
-    def_delegators :sonj_content, :[]=, :[], :fetch
+    def_delegators :sonj_content, :[], :fetch
+
+    def []=(name, value)
+      target = sonj_content
+      if self.class.extras_allowed?
+        name = "#{name}"
+        target = sonj_content.extra unless sonj_content.model_properties.include?(name)
+      end
+      target[name] = value
+    end
 
     class << self
+
+      def allow_extras(allowed = true)
+        @extras_allowed = allowed
+      end
+
+      def extras_allowed?
+        @extras_allowed ||= false
+      end
 
       def properties(&property_initializations)
         @property_initializations =

@@ -7,8 +7,8 @@ require 'son_jay/value_array'
 
 module SonJay
 
-  class InfiniteRegressError < StandardError
-  end
+  class InfiniteRegressError < StandardError ; end
+  class DisabledMethodError  < NameError     ; end
 
   class PropertyNameError < KeyError
     def initialize(name)

@@ -5,7 +5,9 @@ module SonJay
     class Properties
       extend Forwardable
 
-      def initialize(property_definitions)
+      attr_reader :model_properties
+
+      def initialize(property_definitions, extra_allowed)
         @data = {}
         @model_properties = Set.new
         property_definitions.each do |d|
@@ -13,6 +15,11 @@ module SonJay
           @data[d.name] = is_model_property ? d.model_class.new : nil
           @model_properties << d.name if is_model_property
         end
+        @extra_allowed = extra_allowed
+      end
+
+      def extra_allowed?
+        @extra_allowed
       end
 
       def_delegators :@data, *[
@@ -54,9 +61,17 @@ module SonJay
         end
       end
 
+      def extra
+        raise SonJay::DisabledMethodError unless extra_allowed?
+        #TODO: Enforce use of string keys.
+        @extra ||= {}
+      end
+
       def to_json(options = ::JSON::State.new)
         options = ::JSON::State.new(options) unless options.kind_of?(::JSON::State)
-        @data.to_json( options )
+        all_data = @data
+        all_data = all_data.merge( extra ) if extra_allowed? && (! extra.empty? )
+        all_data.to_json( options )
       end
 
     end
