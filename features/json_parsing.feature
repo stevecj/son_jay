@@ -225,3 +225,34 @@ Feature: Parsing data from JSON
       |  1                 |  "Jan 1"         |  0                 |  3               |
       | rows[2][0].is_head | rows[2][0].value | rows[2][1].is_head | rows[2][1].value |
       |  1                 |  "Jan 3"         |  0                 |  2               |
+
+  Scenario: Object data with extra properties
+    Given an object model defined as:
+      """
+      class SimpleObjectModel < SonJay::ObjectModel
+        allow_extras
+
+        properties do
+          property :id
+          property :name
+        end
+      end
+      """
+    And JSON data defined as:
+      """
+      json = <<-JSON
+        {
+            "id"        :  55 ,
+            "name"      : "Polygon" ,
+            "published" :  true ,
+            "featured"  :  false
+        }
+      JSON
+      """
+    When the JSON is parsed to a model instance as:
+      """
+      instance = SimpleObjectModel.parse_json( json )
+      """
+    Then the instance attributes and indexed properties are as follows:
+      | id  | name       | ['published'] | ['featured'] |
+      |  55 |  "Polygon" |  true         |  false       |

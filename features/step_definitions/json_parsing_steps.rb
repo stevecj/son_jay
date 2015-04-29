@@ -14,3 +14,7 @@ end
 Then(/^the instance attributes are as follows:$/) do |table|
   object_attributes_match_table! context_data[:instance], table
 end
+
+Then(/^the instance attributes and indexed properties are as follows:$/) do |table|
+  object_attributes_match_table! context_data[:instance], table
+end

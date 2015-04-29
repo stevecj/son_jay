@@ -3,10 +3,15 @@ def object_attributes_match_table!(obj, table)
   attribute_exprs = row_pairs.map( &:first ).reduce( :+ )
   expected_exprs  = row_pairs.map( &:last  ).reduce( :+ )
 
-  actuals   = attribute_exprs .map{ |expr| eval( "obj.#{expr}" ) }
-  expecteds = expected_exprs  .map{ |expr| eval(  expr              ) }
+  actuals   = attribute_exprs .map{ |expr| eval_obj_expression(obj, expr) }
+  expecteds = expected_exprs  .map{ |expr| eval( expr ) }
 
   actual_hash   = Hash[ attribute_exprs.zip( actuals   ) ]
   expected_hash = Hash[ attribute_exprs.zip( expecteds ) ]
   expect( actual_hash ).to eq( expected_hash )
+end
+
+def eval_obj_expression(obj, expr)
+  expr = ".#{expr}" unless expr.start_with?('[')
+  eval("obj#{expr}")
 end
