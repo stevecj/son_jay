@@ -5,7 +5,7 @@ module SonJay
       attr_reader :name, :model_class
 
       def initialize(name, instruction = nil)
-        @name        = name
+        @name        = "#{name}".freeze
         @model_class = model_class_for_instruction( instruction )
       end
 
