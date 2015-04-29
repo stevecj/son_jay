@@ -12,7 +12,9 @@ module SonJay
 
     def initialize
       definitions = self.class.property_definitions
-      @sonj_content = ObjectModel::Properties.new( definitions, self.class.extras_allowed? )
+      @sonj_content = ObjectModel::Properties.new(
+        definitions, self.class.extras_allowed?
+      )
     end
 
     def to_json(*args)
@@ -20,25 +22,32 @@ module SonJay
     end
 
     def []=(name, value)
-      target = sonj_content
-      if self.class.extras_allowed?
-        name = "#{name}" unless String === name
-        target = sonj_content.extra unless sonj_content.model_properties.include?(name)
-      end
+      name = "#{name}" unless String === name
+      target = property_store_for( name )
       target[ name ] = value
     end
 
     def [](name)
-      source = sonj_content
-      if self.class.extras_allowed?
-        name = "#{name}" unless String === name
-        source = sonj_content.extra unless sonj_content.model_properties.include?(name)
-      end
+      name = "#{name}" unless String === name
+      source = property_store_for( name )
       source[ name ]
     end
 
     def fetch(name)
       sonj_content.fetch( name )
+    end
+
+    private
+
+    def property_store_for(name_string)
+      store = sonj_content
+      if (
+        self.class.extras_allowed? &&
+        (! sonj_content.model_properties.include?(name_string) )
+      ) then
+        store = sonj_content.extra
+      end
+      store
     end
 
     class << self
