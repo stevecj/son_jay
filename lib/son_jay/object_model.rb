@@ -1,6 +1,7 @@
 require 'set'
 require 'son_jay/object_model/properties'
 require 'son_jay/object_model/property_definition'
+require 'son_jay/object_model/property_definitions'
 require 'son_jay/object_model/properties_definer'
 require 'son_jay/object_model/extra_data'
 
@@ -22,13 +23,13 @@ module SonJay
     end
 
     def []=(name, value)
-      name = "#{name}" unless String === name
+      name = self.class.property_definitions.name_from(name)
       target = property_store_for( name )
       target[ name ] = value
     end
 
     def [](name)
-      name = "#{name}" unless String === name
+      name = self.class.property_definitions.name_from(name)
       source = property_store_for( name )
       source[ name ]
     end
@@ -71,7 +72,7 @@ module SonJay
       end
 
       def _evaluate_property_definitions
-        @property_definitions = [].tap do |definitions|
+        @property_definitions = PropertyDefinitions.new.tap do |definitions|
           definer = PropertiesDefiner.new( definitions )
           _property_initializations.each do |pi|
             definer.instance_eval &pi
@@ -81,6 +82,8 @@ module SonJay
         _validate_model_dependencies!
 
         _apply_property_definitions property_definitions
+
+        @property_definitions
       end
 
       def _property_initializations

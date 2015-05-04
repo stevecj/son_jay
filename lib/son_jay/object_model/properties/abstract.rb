@@ -10,6 +10,7 @@ module SonJay
         attr_reader :model_properties
 
         def initialize(property_definitions)
+          @property_definitions = property_definitions
           @data = {}
           @model_properties = Set.new
           property_definitions.each do |d|
@@ -25,19 +26,19 @@ module SonJay
         ]
 
         def [](name)
-          name = "#{name}" unless String === name
+          name = property_definitions.name_from(name)
           @data[name]
         end
 
         def fetch(name)
-          name = "#{name}" unless String === name
+          name = property_definitions.name_from(name)
           @data.fetch(name)
         rescue KeyError
           raise PropertyNameError.new(name)
         end
 
         def []=(name, value)
-          name = "#{name}" unless String === name
+          name = property_definitions.name_from(name)
           raise PropertyNameError.new(name) unless @data.has_key?(name)
           @data[name] = value
         end
@@ -49,7 +50,7 @@ module SonJay
         end
 
         def load_property(name, value)
-          name = "#{name}" unless String === name
+          name = property_definitions.name_from(name)
           if @data.has_key?( name )
             load_defined_property name, value
           else
@@ -83,6 +84,8 @@ module SonJay
         def hash_for_json
           raise NotImplementedError, "Subclass responsibility"
         end
+
+        attr_reader :property_definitions
 
       end
 
