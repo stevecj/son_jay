@@ -5,6 +5,15 @@ module SonJay
       extend Forwardable
       include Enumerable
 
+      def self.from_initializations(property_initializations)
+        new.tap do |instance|
+          definer = PropertiesDefiner.new( instance )
+          property_initializations.each do |pi|
+            definer.instance_eval &pi
+          end
+        end
+      end
+
       def initialize
         @definitions = []
         @name_symbol_to_string_map = {}
@@ -24,6 +33,10 @@ module SonJay
         when Symbol then @name_symbol_to_string_map.fetch(name, name)
         else            "#{name}"
         end
+      end
+
+      def hard_model_dependencies
+        map( &:model_class ).compact.uniq
       end
     end
 

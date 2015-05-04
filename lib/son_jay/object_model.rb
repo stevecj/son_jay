@@ -72,17 +72,11 @@ module SonJay
       end
 
       def _evaluate_property_definitions
-        @property_definitions = PropertyDefinitions.new.tap do |definitions|
-          definer = PropertiesDefiner.new( definitions )
-          _property_initializations.each do |pi|
-            definer.instance_eval &pi
-          end
-        end
-
+        @property_definitions = PropertyDefinitions.from_initializations(
+          _property_initializations
+        )
         _validate_model_dependencies!
-
         _apply_property_definitions property_definitions
-
         @property_definitions
       end
 
@@ -103,14 +97,10 @@ module SonJay
       def _validate_model_dependencies!(dependants=Set.new)
         raise InfiniteRegressError if dependants.include?(self)
         dependants << self
-        _hard_model_dependencies.each do |d|
+        property_definitions.hard_model_dependencies.each do |d|
           next unless d.respond_to?( :_validate_model_dependencies!, true )
           d.send :_validate_model_dependencies!, dependants
         end
-      end
-
-      def _hard_model_dependencies
-        property_definitions.map( &:model_class ).compact.uniq
       end
     end
 
