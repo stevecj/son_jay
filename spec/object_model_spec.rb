@@ -289,18 +289,28 @@ describe SonJay::ObjectModel do
         end
       end
 
-      it "allows name-index writing of arbitrary extra properties" do
-        model_instance[ 'qqq' ] = 111
-        model_instance[ :rrr  ] = 222
+      it "allows name-index writing of both defined and arbitrary, extra properties" do
+        model_instance[ 'aaa' ] = 111
+        model_instance[ :bbb  ] = 222
+        model_instance[ 'qqq' ] = 333
+        model_instance[ :rrr  ] = 444
+
+        expect( model_instance.aaa ).to eq( 111 )
+        expect( model_instance.bbb ).to eq( 222 )
+
         expect( model_instance.sonj_content.extra.to_h ).
-          to eq( 'qqq' => 111, 'rrr' => 222 )
+          to eq( 'qqq' => 333, 'rrr' => 444 )
       end
 
-      it "allows name-index reading of arbitrary extra properties" do
-        model_instance.sonj_content.extra[ 'qqq' ] = 111
-        model_instance.sonj_content.extra[ :rrr  ] = 222
-        expect( model_instance[ :qqq  ] ).to eq( 111 )
-        expect( model_instance[ 'rrr' ] ).to eq( 222 )
+      it "allows name-index reading of both defined and arbitrary, extra properties" do
+        model_instance.aaa = 111
+        model_instance.bbb = 222
+        model_instance.sonj_content.extra[ 'qqq' ] = 333
+        model_instance.sonj_content.extra[ :rrr  ] = 444
+        expect( model_instance[ :aaa  ] ).to eq( 111 )
+        expect( model_instance[ 'bbb' ] ).to eq( 222 )
+        expect( model_instance[ :qqq  ] ).to eq( 333 )
+        expect( model_instance[ 'rrr' ] ).to eq( 444 )
       end
 
       it "serializes to a JSON object representation w/ properties and extras" do

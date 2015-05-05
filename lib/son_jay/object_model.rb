@@ -44,7 +44,7 @@ module SonJay
       store = sonj_content
       if (
         self.class.extras_allowed? &&
-        (! sonj_content.model_properties.include?(name_string) )
+        (! self.class.property_definitions.include_name?(name_string) )
       ) then
         store = sonj_content.extra
       end

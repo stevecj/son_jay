@@ -254,5 +254,5 @@ Feature: Parsing data from JSON
       instance = SimpleObjectModel.parse_json( json )
       """
     Then the instance attributes and indexed properties are as follows:
-      | id  | name       | ['published'] | ['featured'] |
-      |  55 |  "Polygon" |  true         |  false       |
+      | id  | name       | ['id']  | ['name']   | ['published'] | ['featured'] |
+      |  55 |  "Polygon" |   55    |  "Polygon" |  true         |  false       |

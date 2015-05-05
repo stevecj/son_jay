@@ -1,3 +1,5 @@
+require 'set'
+
 module SonJay
   class ObjectModel
 
@@ -16,12 +18,14 @@ module SonJay
 
       def initialize
         @definitions = []
+        @names = Set.new
         @name_symbol_to_string_map = {}
       end
 
       def <<(definition)
         @definitions << definition
         name = definition.name
+        @names << name
         @name_symbol_to_string_map[name.to_sym] = name
       end
 
@@ -35,8 +39,17 @@ module SonJay
         end
       end
 
+      def include_name?(name)
+        name = name_from( name )
+        names.include?( name )
+      end
+
       def hard_model_dependencies
         map( &:model_class ).compact.uniq
+      end
+
+      def names
+        @names.freeze
       end
     end
 

@@ -277,8 +277,8 @@ Feature: Serializing data to JSON
       """
     When the instance's property values are assigned as:
       """
-      instance.id   =  55
-      instance.name = "Polygon"
+      instance['id']        =  55
+      instance.name  = "Polygon"
       instance['published'] =  true
       instance['featured']  =  false
       """
