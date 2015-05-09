@@ -355,6 +355,80 @@ describe SonJay::ObjectModel do
       end
     end
 
+    context "with subclasses" do
+      before do
+        module subject_module::M
+          class SubA < RootModel
+            properties do
+              property :ccc
+            end
+          end
+
+          class SubB < RootModel
+            allow_extras
+
+            properties do
+              property :detail_z2, model: DetailZ
+            end
+          end
+        end
+      end
+
+      let( :sub_a_class ) { subject_module::SubA }
+      let( :sub_b_class ) { subject_module::SubB }
+      let!( :sub_a_instance ) { sub_a_class.new }
+      let!( :sub_b_instance ) { sub_b_class.new }
+
+      it "allows a subclass to inherit property definitions from its parent" do
+        missing_property_names_a =
+          model_class.property_definitions.map( &:name ) -
+          sub_a_class.property_definitions.map( &:name )
+        expect( missing_property_names_a ).to eq( [] )
+
+        missing_property_names_b =
+          model_class.property_definitions.map( &:name ) -
+          sub_b_class.property_definitions.map( &:name )
+        expect( missing_property_names_b ).to eq( [] )
+      end
+
+      it "does not leak subclass property definitions to its parent" do
+        property_names = model_class.property_definitions.map(&:name)
+        expect( property_names ).not_to include( 'ccc' )
+        expect( property_names ).not_to include( 'detail_z2' )
+      end
+
+      it "allows a subclass to inherit property access behavior from its parent" do
+        sub_a_instance.aaa = 123
+        expect( sub_a_instance.aaa ).to eq( 123 )
+      end
+
+      it "allows adding value properties to the subclass" do
+        expect( sub_a_instance ).to respond_to( :ccc )
+      end
+
+      it "does not leak subclass value property definitions to its parent class" do
+        expect( model_instance ).not_to respond_to( :ccc )
+      end
+
+      it "allows adding model properties to the subclass" do
+        expect( sub_b_instance.detail_z2 ).to respond_to( :zzz )
+      end
+
+      it "does not leak subclass model property definitions to its parent class" do
+        expect( model_instance ).not_to respond_to( :detail_z2 )
+      end
+
+      it "supports subclass allowing extras when the parent class does not" do
+        sub_b_instance['xyz'] = 123
+        expect( sub_b_instance['xyz'] ).to eq( 123 )
+      end
+
+      it "does not leak allowing of extras to its parent class" do
+        expect{
+          model_instance['xyz'] = 123
+        }.to raise_exception( SonJay::PropertyNameError )
+      end
+    end
   end
 
   describe "a subclass with a directly self-referential property specification" do
@@ -400,6 +474,7 @@ describe SonJay::ObjectModel do
       expect{ subclass.property_definitions }.
         to raise_exception( SonJay::InfiniteRegressError )
     end
+
   end
 
 end

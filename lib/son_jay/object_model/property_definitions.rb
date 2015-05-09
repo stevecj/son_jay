@@ -22,6 +22,17 @@ module SonJay
         @name_symbol_to_string_map = {}
       end
 
+      def +(other)
+        sum = self.class.new
+        each do |property_definition|
+          sum << property_definition
+        end
+        other.each do |property_definition|
+          sum << property_definition
+        end
+        sum
+      end
+
       def <<(definition)
         @definitions << definition
         name = definition.name

@@ -72,9 +72,16 @@ module SonJay
       end
 
       def _evaluate_property_definitions
-        @property_definitions = PropertyDefinitions.from_initializations(
-          _property_initializations
-        )
+        super_defs = self == SonJay::ObjectModel ?
+          PropertyDefinitions.new :
+          superclass.property_definitions
+
+        @property_definitions =
+          super_defs +
+          PropertyDefinitions.from_initializations(
+            _property_initializations
+          )
+
         _validate_model_dependencies!
         _apply_property_definitions property_definitions
         @property_definitions
