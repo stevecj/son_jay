@@ -6,6 +6,7 @@ module SonJay
 
       class Abstract
         extend Forwardable
+        include Enumerable
 
         attr_reader :model_properties
 
@@ -63,6 +64,10 @@ module SonJay
         def to_json(options = ::JSON::State.new)
           options = ::JSON::State.new(options) unless options.kind_of?(::JSON::State)
           hash_for_json.to_json( options )
+        end
+
+        def each
+          raise NotImplementedError, "Subclass responsibility"
         end
 
         private

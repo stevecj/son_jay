@@ -21,6 +21,10 @@ module SonJay
         end
       end
 
+      def model_content
+        sonj_content
+      end
+
     end
 
   end

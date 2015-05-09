@@ -8,6 +8,15 @@ module SonJay
           @extra ||= ObjectModel::ExtraData.new
         end
 
+        def each
+          @data.each do |(name, value)|
+            yield name, value
+          end
+          @extra.each do |(name, value)|
+            yield name, value
+          end
+        end
+
         private
 
         def load_extra_property(name_string, value)

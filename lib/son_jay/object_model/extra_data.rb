@@ -5,6 +5,7 @@ module SonJay
 
     class ExtraData
       extend Forwardable
+      include Enumerable
 
       def initialize
         @data = {}
@@ -28,7 +29,7 @@ module SonJay
         @data.dup
       end
 
-      def_delegator :@data, :empty?
+      def_delegators :@data, :empty?, :each
 
     end
 

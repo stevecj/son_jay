@@ -8,6 +8,12 @@ module SonJay
           raise SonJay::DisabledMethodError
         end
 
+        def each
+          @data.each do |(name, value)|
+            yield name, value
+          end
+        end
+
         private
 
         def load_extra_property(name_string, value)

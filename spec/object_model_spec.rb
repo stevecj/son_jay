@@ -134,6 +134,25 @@ describe SonJay::ObjectModel do
           expect{ sonj_content.extra }.
             to raise_exception( SonJay::DisabledMethodError )
         end
+
+        it "implements enumerable behaviors" do
+          expect( sonj_content ).to respond_to( :entries )
+        end
+
+        it "enumerates entries for all defined properties" do
+          sonj_content['bbb'] = 'B'
+          sonj_content['detail_xy'].xxx = 'X'
+          actual_pairs = []
+          sonj_content.each do |*pair|
+            actual_pairs << pair
+          end
+          expect( actual_pairs ).to match_array( [
+            [ 'aaa', nil ],
+            [ 'bbb', 'B' ],
+            [ 'detail_xy', sonj_content['detail_xy'] ],
+            [ 'detail_z',  sonj_content['detail_z' ] ],
+          ] )
+        end
       end
 
       context "with extras allowed" do
@@ -145,6 +164,29 @@ describe SonJay::ObjectModel do
 
         it "allows access to extra properties object" do
           expect( sonj_content.extra.to_h ).to eq( {} )
+        end
+
+        it "implements enumerable behaviors" do
+          expect( sonj_content ).to respond_to( :entries )
+        end
+
+        it "enumerates entries for all defined properties and extra assigned property values" do
+          sonj_content['bbb'] = 'B'
+          sonj_content['detail_xy'].xxx = 'X'
+          sonj_content.extra['qqq'] = 'Q'
+          sonj_content.extra['rrr'] = nil
+          actual_pairs = []
+          sonj_content.each do |*pair|
+            actual_pairs << pair
+          end
+          expect( actual_pairs ).to match_array( [
+            [ 'aaa', nil ],
+            [ 'bbb', 'B' ],
+            [ 'qqq', 'Q' ],
+            [ 'rrr', nil ],
+            [ 'detail_xy', sonj_content['detail_xy'] ],
+            [ 'detail_z',  sonj_content['detail_z' ] ],
+          ] )
         end
       end
 
