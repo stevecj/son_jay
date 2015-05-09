@@ -1,5 +1,5 @@
 require 'set'
-require 'son_jay/object_model/properties'
+require 'son_jay/object_model/content'
 require 'son_jay/object_model/property_definition'
 require 'son_jay/object_model/property_definitions'
 require 'son_jay/object_model/properties_definer'
@@ -13,7 +13,7 @@ module SonJay
 
     def initialize
       definitions = self.class.property_definitions
-      @sonj_content = ObjectModel::Properties.new(
+      @sonj_content = ObjectModel::Content.new(
         definitions, self.class.extras_allowed?
       )
     end

@@ -2,7 +2,7 @@ require 'forwardable'
 
 module SonJay
   class ObjectModel
-    module Properties
+    module Content
 
       class Abstract
         extend Forwardable

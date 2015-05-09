@@ -1,15 +1,18 @@
 module SonJay
   class ObjectModel
-    module Properties
+    module Content
 
-      class PropertiesWithoutExtra < Abstract
+      class ContentWithExtra < Abstract
 
         def extra
-          raise SonJay::DisabledMethodError
+          @extra ||= ObjectModel::ExtraData.new
         end
 
         def each
           @data.each do |(name, value)|
+            yield name, value
+          end
+          @extra.each do |(name, value)|
             yield name, value
           end
         end
@@ -17,11 +20,13 @@ module SonJay
         private
 
         def load_extra_property(name_string, value)
-          # Ignore extra.
+          extra[ name_string ] = value
         end
 
         def hash_for_json
-          @data
+          extra.empty? ?
+            @data :
+            extra.hash_merge( @data )
         end
 
       end
