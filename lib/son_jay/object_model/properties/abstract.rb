@@ -13,11 +13,9 @@ module SonJay
           @property_definitions = property_definitions
           @data = {}
           @model_properties = Set.new
-          property_definitions.each do |d|
-            is_model_property = !! d.model_class
-            @data[d.name] = is_model_property ? d.model_class.new : nil
-            @model_properties << d.name if is_model_property
-          end
+
+          init_properties \
+            *property_definitions.partition { |md| !! md.model_class }
         end
 
         def_delegators :@data, *[
@@ -68,6 +66,17 @@ module SonJay
         end
 
         private
+
+        def init_properties(model_property_defs, value_property_defs)
+          value_property_defs.each do |d|
+            @data[d.name] = nil
+          end
+
+          model_property_defs.each do |d|
+            @data[d.name] = d.model_class.new
+            @model_properties << d.name
+          end
+        end
 
         def load_defined_property(name_string, value)
           if @model_properties.include?( name_string )
