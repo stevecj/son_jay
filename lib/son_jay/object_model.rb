@@ -72,18 +72,27 @@ module SonJay
       end
 
       def _evaluate_property_definitions
-        super_defs = self == SonJay::ObjectModel ?
-          PropertyDefinitions.new :
-          superclass.property_definitions
+        _populate_property_definitions
+        _validate_model_dependencies!
+        _apply_property_definitions property_definitions
+        _property_definitions
+      end
 
+      def _populate_property_definitions
         @property_definitions =
-          super_defs +
+          _inherited_property_definitions +
           PropertyDefinitions.from_initializations(
             _property_initializations
           )
+      end
 
-        _validate_model_dependencies!
-        _apply_property_definitions property_definitions
+      def _inherited_property_definitions
+        self == SonJay::ObjectModel ?
+          PropertyDefinitions.new :
+          superclass.property_definitions
+      end
+
+      def _property_definitions
         @property_definitions
       end
 
