@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SonJay::ObjectModel::ExtraData do
+describe SonJay::ObjectModel::ContentData do
 
   it "provides value access by name symbol or string" do
     subject[ :aaa  ] = 1

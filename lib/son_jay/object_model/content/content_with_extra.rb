@@ -5,7 +5,7 @@ module SonJay
       class ContentWithExtra < Abstract
 
         def extra
-          @extra ||= ObjectModel::ExtraData.new
+          @extra ||= ObjectModel::ContentData.new
         end
 
         def each

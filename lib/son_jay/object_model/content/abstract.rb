@@ -12,7 +12,7 @@ module SonJay
 
         def initialize(property_definitions)
           @property_definitions = property_definitions
-          @data = {}
+          @data = ObjectModel::ContentData.new
           @model_properties = Set.new
 
           init_properties \
