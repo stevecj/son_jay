@@ -38,6 +38,7 @@ module SonJay
         name = definition.name
         @names << name
         @name_symbol_to_string_map[name.to_sym] = name
+        self
       end
 
       def_delegators :@definitions, :each

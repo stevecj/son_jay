@@ -34,4 +34,45 @@ describe SonJay::ObjectModel::ContentData do
     expect( subject ).not_to be_empty
   end
 
+  describe '#freeze' do
+    it "causes the instance to behave as frozen" do
+      subject.freeze
+      expect{ subject['a'] = 1 }.to raise_exception( RuntimeError )
+    end
+  end
+
+  describe '#dup' do
+    it "makes a shallow copy" do
+      subject[ 'aa' ] = 'A'
+      subject[ 'bb' ] = 'B'
+      actual_dup = subject.dup
+      expect( actual_dup.keys ).to match_array( ['aa', 'bb'] )
+      expect( actual_dup['aa'] ).to equal( subject['aa'] )
+      actual_dup['bb'] = 'BBB'
+      expect( subject['bb'] ).to eq( 'B' )
+    end
+
+    it "returns a thawed copy of a frozen instance" do
+      subject.freeze
+      expect( subject.dup ).not_to be_frozen
+    end
+  end
+
+  describe '#clone' do
+    it "makes a shallow copy" do
+      subject[ 'aa' ] = 'A'
+      subject[ 'bb' ] = 'B'
+      actual_clone = subject.clone
+      expect( actual_clone.keys ).to match_array( ['aa', 'bb'] )
+      expect( actual_clone['aa'] ).to equal( subject['aa'] )
+      actual_clone['bb'] = 'BBB'
+      expect( subject['bb'] ).to eq( 'B' )
+    end
+
+    it "returns a frozen copy of a frozen instance" do
+      subject.freeze
+      expect( subject.clone ).to be_frozen
+    end
+  end
+
 end

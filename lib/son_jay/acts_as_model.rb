@@ -5,6 +5,10 @@ module SonJay
       other.extend ClassBehavior
     end
 
+    def model_content
+      sonj_content
+    end
+
     module ClassBehavior
 
       def parse_json(json)
@@ -19,10 +23,6 @@ module SonJay
           klass = SonJay::ModelArray( self )
           const_set :Array, klass
         end
-      end
-
-      def model_content
-        sonj_content
       end
 
     end

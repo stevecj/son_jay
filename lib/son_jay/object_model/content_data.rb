@@ -7,8 +7,8 @@ module SonJay
       extend Forwardable
       include Enumerable
 
-      def initialize
-        @data = {}
+      def initialize(data = {})
+        @data = data.to_hash
       end
 
       def []=(name, value)
@@ -45,11 +45,28 @@ module SonJay
         }
       end
 
+      def freeze
+        @data.freeze
+        super
+      end
+
       def to_h
         @data.dup
       end
 
-      def_delegators :@data, :each, :length, :has_key?, :empty?, :to_json
+      def dup
+        self.class.new( @data.dup )
+      end
+
+      def clone
+        new_copy = super
+        unless new_copy.frozen?
+          new_copy.instance_variable_set :@data, @data.clone
+        end
+        new_copy
+      end
+
+      def_delegators :@data, :each, :length, :keys, :has_key?, :empty?, :to_json
 
     end
 

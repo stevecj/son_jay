@@ -62,139 +62,21 @@ describe SonJay::ObjectModel do
       end
     end
 
-    describe "#sonj_content" do
-      let( :sonj_content ) { model_instance.sonj_content }
-
-      it "has number of entries equal to number of defined properties" do
-        expect( sonj_content.length ).to eq( 4 )
-      end
-
-      it "has name-indexed settable/gettable value properties by string or symbol" do
-        sonj_content[ :aaa  ] =  1
-        sonj_content[ 'bbb' ] = 'XYZ'
-
-        expect( sonj_content[ 'aaa' ] ).to eq(  1    )
-        expect( sonj_content[ :bbb  ] ).to eq( 'XYZ' )
-      end
-
-      it "has nil defaults for value properties" do
-        expect( sonj_content[ 'aaa' ] ).to be_nil
-        expect( sonj_content[ :bbb  ] ).to be_nil
-      end
-
-      it "has name-indexed gettable values for defined modeled-object properties by string or symbol" do
-        expect( sonj_content['detail_xy'] ).
-          to be_kind_of( subject_module::DetailXY )
-        expect( sonj_content[:detail_z] ).
-          to be_kind_of( subject_module::DetailZ )
-      end
-
-      it "rejects assignment of an undefined property" do
-        expect{ sonj_content['qq'] = 0 }.to raise_exception(
-          SonJay::PropertyNameError
-        )
-      end
-
-      it "returns nil for name-indexed access to a non-existent property" do
-        expect( sonj_content[ 'qq' ] ).to be_nil
-        expect( sonj_content[ :rr  ] ).to be_nil
-      end
-
-      it "has fetchable value properties by name string or symbol" do
-        sonj_content[ :aaa  ] =  1
-        sonj_content[ 'bbb' ] = 'XYZ'
-
-        expect( sonj_content.fetch( 'aaa' ) ).to eq(  1    )
-        expect( sonj_content.fetch( :bbb  ) ).to eq( 'XYZ' )
-      end
-
-      it "has nil defaults for value property fetches" do
-        expect( sonj_content.fetch( 'aaa' ) ).to be_nil
-        expect( sonj_content.fetch( :bbb  ) ).to be_nil
-      end
-
-      it "has name-indexed fetchable values for defined modeled-object properties by string or symbol" do
-        expect( sonj_content.fetch('detail_xy') ).
-          to be_kind_of( subject_module::DetailXY )
-        expect( sonj_content.fetch(:detail_z) ).
-          to be_kind_of( subject_module::DetailZ )
-      end
-
-      it "rejects fetch of an undefined property by name" do
-        expect{ sonj_content.fetch('qq') }.to raise_exception(
-          SonJay::PropertyNameError
-        )
-        expect{ sonj_content.fetch(:rr) }.to raise_exception(
-          SonJay::PropertyNameError
-        )
-      end
-
-      context "without extras allowed" do
-        it "rejects access to extra properties object" do
-          expect{ sonj_content.extra }.
-            to raise_exception( SonJay::DisabledMethodError )
-        end
-
-        it "implements enumerable behaviors" do
-          expect( sonj_content ).to respond_to( :entries )
-        end
-
-        it "enumerates entries for all defined properties" do
-          sonj_content['bbb'] = 'B'
-          sonj_content['detail_xy'].xxx = 'X'
-          actual_pairs = []
-          sonj_content.each do |*pair|
-            actual_pairs << pair
-          end
-          expect( actual_pairs ).to match_array( [
-            [ 'aaa', nil ],
-            [ 'bbb', 'B' ],
-            [ 'detail_xy', sonj_content['detail_xy'] ],
-            [ 'detail_z',  sonj_content['detail_z' ] ],
-          ] )
-        end
-      end
-
-      context "with extras allowed" do
-        before do
-          model_class.class_eval do
-            allow_extras
-          end
-        end
-
-        it "allows access to extra properties object" do
-          expect( sonj_content.extra.to_h ).to eq( {} )
-        end
-
-        it "implements enumerable behaviors" do
-          expect( sonj_content ).to respond_to( :entries )
-        end
-
-        it "enumerates entries for all defined properties and extra assigned property values" do
-          sonj_content['bbb'] = 'B'
-          sonj_content['detail_xy'].xxx = 'X'
-          sonj_content.extra['qqq'] = 'Q'
-          sonj_content.extra['rrr'] = nil
-          actual_pairs = []
-          sonj_content.each do |*pair|
-            actual_pairs << pair
-          end
-          expect( actual_pairs ).to match_array( [
-            [ 'aaa', nil ],
-            [ 'bbb', 'B' ],
-            [ 'qqq', 'Q' ],
-            [ 'rrr', nil ],
-            [ 'detail_xy', sonj_content['detail_xy'] ],
-            [ 'detail_z',  sonj_content['detail_z' ] ],
-          ] )
-        end
-      end
-
-    end
-
     it "has direct property accessor methods for each property" do
       model_instance.aaa, model_instance.bbb = 11, 22
-      expect( [model_instance.aaa, model_instance.bbb] ).to eq( [11, 22] )
+      content = model_instance.model_content
+
+      expect( [content['aaa'], content['bbb']] ).
+        to eq( [11, 22] )
+
+      expect( [model_instance.aaa, model_instance.bbb] ).
+        to eq( [11, 22] )
+
+      expect( model_instance.detail_xy ).
+        to equal( content['detail_xy'] )
+      expect( model_instance.detail_z ).
+        to equal( content['detail_z'] )
+
       expect( model_instance.detail_xy ).
         to be_kind_of( subject_module::DetailXY )
       expect( model_instance.detail_z ).
@@ -299,7 +181,7 @@ describe SonJay::ObjectModel do
         )
       end
 
-      it "parses from JSON with extra properties to an instance with defined properties filled in" do
+      it "parses from JSON with extra properties to an instance with only defined properties filled in" do
         json = <<-JSON
           {
             "aaa":  123  ,
