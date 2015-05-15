@@ -1,6 +1,7 @@
 require 'forwardable'
 
 module SonJay
+  include Enumerable
 
   def self.ModelArray(entry_class)
     Class.new(ModelArray).tap{ |c|
@@ -57,10 +58,30 @@ module SonJay
 
     def_delegators :@entries, *[
       :[] ,
+      :at ,
+      :choice,
+      :collect,
+      :count ,
+      :cycle ,
+      :drop ,
+      :drop_while ,
+      :each ,
+      :each_index,
       :empty? ,
       :entries ,
+      :fetch ,
+      :find_index ,
+      :first ,
+      :include? ,
+      :index ,
+      :last ,
       :length ,
+      :map ,
+      :product ,
+      :size ,
       :to_json ,
+      :to_yaml ,
+      :zip
     ]
 
   end
