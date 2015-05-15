@@ -15,16 +15,16 @@ describe SonJay::ActsAsModel do
           end
         end
 
-        def sonj_content
-          @sonj_content ||= Content.new
+        def model_content
+          @model_content ||= Content.new
         end
       end
     }
 
     describe '::parse_json' do
-      it "returns a new instance with parsed JSON data loaded into its #sonj_content object" do
+      it "returns a new instance with parsed JSON data loaded into its #model_content object" do
         instance = klass.parse_json( '{"hello": "world"}' )
-        loaded_data = instance.sonj_content.loaded_data
+        loaded_data = instance.model_content.loaded_data
         expect( loaded_data ).to eq( {'hello' => 'world'} )
       end
     end

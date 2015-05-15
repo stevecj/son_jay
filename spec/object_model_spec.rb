@@ -166,7 +166,7 @@ describe SonJay::ObjectModel do
       end
 
       it "has number of entries equal to total number of defined properties" do
-        expect( model_instance.sonj_content.length ).to eq( 6 )
+        expect( model_instance.model_content.length ).to eq( 6 )
       end
       
     end
@@ -222,15 +222,15 @@ describe SonJay::ObjectModel do
         expect( model_instance.aaa ).to eq( 111 )
         expect( model_instance.bbb ).to eq( 222 )
 
-        expect( model_instance.sonj_content.extra.to_h ).
+        expect( model_instance.model_content.extra.to_h ).
           to eq( 'qqq' => 333, 'rrr' => 444 )
       end
 
       it "allows name-index reading of both defined and arbitrary, extra properties" do
         model_instance.aaa = 111
         model_instance.bbb = 222
-        model_instance.sonj_content.extra[ 'qqq' ] = 333
-        model_instance.sonj_content.extra[ :rrr  ] = 444
+        model_instance.model_content.extra[ 'qqq' ] = 333
+        model_instance.model_content.extra[ :rrr  ] = 444
         expect( model_instance[ :aaa  ] ).to eq( 111 )
         expect( model_instance[ 'bbb' ] ).to eq( 222 )
         expect( model_instance[ :qqq  ] ).to eq( 333 )

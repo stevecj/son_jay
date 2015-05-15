@@ -2,7 +2,7 @@ module SonJay
   class ValueArray < ::Array
     include ActsAsModel
 
-    def sonj_content
+    def model_content
       self
     end
 

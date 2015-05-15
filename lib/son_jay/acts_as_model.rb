@@ -5,8 +5,9 @@ module SonJay
       other.extend ClassBehavior
     end
 
-    def model_content
-      sonj_content
+    # Deprecated
+    def sonj_content
+      model_content
     end
 
     module ClassBehavior
@@ -14,7 +15,7 @@ module SonJay
       def parse_json(json)
         data = JSON.parse( json )
         instance = new
-        instance.sonj_content.load_data data
+        instance.model_content.load_data data
         instance
       end
 

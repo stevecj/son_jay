@@ -9,17 +9,17 @@ module SonJay
   class ObjectModel
     include ActsAsModel
 
-    attr_reader :sonj_content
+    attr_reader :model_content
 
     def initialize
       definitions = self.class.property_definitions
-      @sonj_content = ObjectModel::Content.new(
+      @model_content = ObjectModel::Content.new(
         definitions, self.class.extras_allowed?
       )
     end
 
     def to_json(*args)
-      sonj_content.to_json( *args )
+      model_content.to_json( *args )
     end
 
     def []=(name, value)
@@ -35,18 +35,18 @@ module SonJay
     end
 
     def fetch(name)
-      sonj_content.fetch( name )
+      model_content.fetch( name )
     end
 
     private
 
     def property_store_for(name_string)
-      store = sonj_content
+      store = model_content
       if (
         self.class.extras_allowed? &&
         (! self.class.property_definitions.include_name?(name_string) )
       ) then
-        store = sonj_content.extra
+        store = model_content.extra
       end
       store
     end
@@ -104,8 +104,8 @@ module SonJay
         definitions.each do |d|
           name = d.name
           class_eval <<-CODE
-            def #{name}         ; sonj_content[#{name.inspect}]         ; end
-            def #{name}=(value) ; sonj_content[#{name.inspect}] = value ; end
+            def #{name}         ; model_content[#{name.inspect}]         ; end
+            def #{name}=(value) ; model_content[#{name.inspect}] = value ; end
           CODE
         end
       end

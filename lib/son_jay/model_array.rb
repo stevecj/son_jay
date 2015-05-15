@@ -21,7 +21,7 @@ module SonJay
       @entries = []
     end
 
-    def sonj_content
+    def model_content
       self
     end
 
@@ -33,7 +33,7 @@ module SonJay
 
     def load_data(data)
       data.each do |entry_data|
-        additional.sonj_content.load_data entry_data
+        additional.model_content.load_data entry_data
       end
     end
 

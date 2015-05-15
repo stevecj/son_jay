@@ -107,7 +107,7 @@ module SonJay
 
         def load_defined_property(name_string, value)
           if @model_properties.include?( name_string )
-            @data[ name_string ].sonj_content.load_data value
+            @data[ name_string ].model_content.load_data value
           else
             @data[ name_string ] = value
           end

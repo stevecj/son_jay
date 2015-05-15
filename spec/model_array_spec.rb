@@ -25,7 +25,7 @@ describe SonJay::ModelArray do
       end
 
       attr_accessor :loaded_data
-      def sonj_content ; Content.new(self) ; end
+      def model_content ; Content.new(self) ; end
     end }
 
     describe '::array_class' do
@@ -66,9 +66,9 @@ describe SonJay::ModelArray do
       end
     end
 
-    describe '#sonj_content' do
+    describe '#model_content' do
       it "returns the model array" do
-        expect( subject.sonj_content ).to equal( subject )
+        expect( subject.model_content ).to equal( subject )
       end
     end
   end

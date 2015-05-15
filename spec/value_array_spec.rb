@@ -6,9 +6,9 @@ describe SonJay::ValueArray do
     expect( subject << 1 << 2 ).to eq( [1, 2] )
   end
 
-  describe '#sonj_content' do
+  describe '#model_content' do
     it "returns the instance itself" do
-      expect( subject.sonj_content ).to eq( subject )
+      expect( subject.model_content ).to eq( subject )
     end
   end
 
