@@ -36,86 +36,85 @@ describe SonJay::ModelArray do
       end
     end
 
-    it "produces instances that are initially empty" do
-      instance = subclass.new
-      expect( instance ).to be_empty
-      expect( instance.length ).to eq( 0 )
-    end
+    describe "an instance" do
+      subject { subclass.new }
 
-    describe "#additional" do
-      it "adds a new entry of the modeled type, and returns the entry" do
-        instance = subclass.new
-
-        entry_0 = instance.additional
-        entry_1 = instance.additional
-
-        expect( entry_0 ).to be_kind_of( entry_class )
-        expect( instance.entries ).to eq( [entry_0, entry_1] )
-      end
-    end
-
-    describe '#load_data' do
-      it "loads entries in the given enumerable into its own model instance entries" do
-        instance = subclass.new
-
-        instance.load_data( ['entry 0 data', 'entry 1 data'] )
-
-        expect( instance.length ).to eq( 2 )
-        expect( instance[0].loaded_data ).to eq( 'entry 0 data' )
-        expect( instance[1].loaded_data ).to eq( 'entry 1 data' )
-      end
-    end
-
-    describe '#model_content' do
-      it "returns the model array" do
-        expect( subject.model_content ).to equal( subject )
-      end
-    end
-
-    describe '#freeze' do
-      it "causes the instance to behave as frozen" do
-        instance = subclass.new
-        instance.freeze
-        expect{ instance.additional }.to raise_exception( RuntimeError )
-      end
-    end
-
-    describe '#dup' do
-      it "makes a shallow copy" do
-        instance = subclass.new
-        instance.additional
-        actual_dup = instance.dup
-        expect( actual_dup[0] ).to eq( instance[0] )
-        actual_dup.additional
-        expect( instance.length ).to eq( 1 )
+      it "is initially empty" do
+        expect( subject ).to be_empty
+        expect( subject.length ).to eq( 0 )
       end
 
-      it "returns a thawed copy of a frozen instance" do
-        instance = subclass.new
-        instance.freeze
-        actual_dup = instance.dup
-        expect( actual_dup ).not_to be_frozen
-        expect{ actual_dup.additional }.not_to raise_exception
-      end
-    end
+      describe "#additional" do
+        it "adds a new entry of the modeled type, and returns the entry" do
+          entry_0 = subject.additional
+          entry_1 = subject.additional
 
-    describe '#clone' do
-      it "makes a shallow copy" do
-        instance = subclass.new
-        instance.additional
-        actual_clone = instance.clone
-        expect( actual_clone[0] ).to eq( instance[0] )
-        actual_clone.additional
-        expect( instance.length ).to eq( 1 )
+          expect( entry_0 ).to be_kind_of( entry_class )
+
+          expect( subject.entries ).to eq( [
+            entry_0,
+            entry_1
+          ] )
+        end
       end
 
-      it "returns a frozen copy of a frozen instance" do
-        instance = subclass.new
-        instance.freeze
-        actual_clone = instance.clone
-        expect( actual_clone ).to be_frozen
-        expect{ actual_clone.additional }.to raise_exception( RuntimeError )
+      describe '#load_data' do
+        it "loads entries in the given enumerable into its own model instance entries" do
+          subject.load_data( ['entry 0 data', 'entry 1 data'] )
+
+          expect( subject.length ).to eq( 2 )
+          expect( subject[0].loaded_data ).to eq( 'entry 0 data' )
+          expect( subject[1].loaded_data ).to eq( 'entry 1 data' )
+        end
       end
+
+      describe '#model_content' do
+        it "returns the model array" do
+          expect( subject.model_content ).to equal( subject )
+        end
+      end
+
+      describe '#freeze' do
+        it "causes the instance to behave as frozen" do
+          subject.freeze
+          expect{ subject.additional }.to raise_exception( RuntimeError )
+        end
+      end
+
+      describe '#dup' do
+        it "makes a shallow copy" do
+          subject.additional
+          actual_dup = subject.dup
+          expect( actual_dup[0] ).to eq( subject[0] )
+          actual_dup.additional
+          expect( subject.length ).to eq( 1 )
+        end
+
+        it "returns a thawed copy of a frozen instance" do
+          subject.freeze
+          actual_dup = subject.dup
+          expect( actual_dup ).not_to be_frozen
+          expect{ actual_dup.additional }.not_to raise_exception
+        end
+      end
+
+      describe '#clone' do
+        it "makes a shallow copy" do
+          subject.additional
+          actual_clone = subject.clone
+          expect( actual_clone[0] ).to eq( subject[0] )
+          actual_clone.additional
+          expect( subject.length ).to eq( 1 )
+        end
+
+        it "returns a frozen copy of a frozen instance" do
+          subject.freeze
+          actual_clone = subject.clone
+          expect( actual_clone ).to be_frozen
+          expect{ actual_clone.additional }.to raise_exception( RuntimeError )
+        end
+      end
+
     end
   end
 end
