@@ -37,6 +37,24 @@ module SonJay
       end
     end
 
+    def freeze
+      super
+      @entries.freeze
+      self
+    end
+
+    def dup
+      new_copy = super
+      new_copy.instance_variable_set :@entries, @entries.dup
+      new_copy
+    end
+
+    def clone
+      new_copy = super
+      new_copy.instance_variable_set :@entries, @entries.clone unless new_copy.frozen?
+      new_copy
+    end
+
     def_delegators :@entries, *[
       :[] ,
       :empty? ,

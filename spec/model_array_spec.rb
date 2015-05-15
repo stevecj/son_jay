@@ -71,5 +71,51 @@ describe SonJay::ModelArray do
         expect( subject.model_content ).to equal( subject )
       end
     end
+
+    describe '#freeze' do
+      it "causes the instance to behave as frozen" do
+        instance = subclass.new
+        instance.freeze
+        expect{ instance.additional }.to raise_exception( RuntimeError )
+      end
+    end
+
+    describe '#dup' do
+      it "makes a shallow copy" do
+        instance = subclass.new
+        instance.additional
+        actual_dup = instance.dup
+        expect( actual_dup[0] ).to eq( instance[0] )
+        actual_dup.additional
+        expect( instance.length ).to eq( 1 )
+      end
+
+      it "returns a thawed copy of a frozen instance" do
+        instance = subclass.new
+        instance.freeze
+        actual_dup = instance.dup
+        expect( actual_dup ).not_to be_frozen
+        expect{ actual_dup.additional }.not_to raise_exception
+      end
+    end
+
+    describe '#clone' do
+      it "makes a shallow copy" do
+        instance = subclass.new
+        instance.additional
+        actual_clone = instance.clone
+        expect( actual_clone[0] ).to eq( instance[0] )
+        actual_clone.additional
+        expect( instance.length ).to eq( 1 )
+      end
+
+      it "returns a frozen copy of a frozen instance" do
+        instance = subclass.new
+        instance.freeze
+        actual_clone = instance.clone
+        expect( actual_clone ).to be_frozen
+        expect{ actual_clone.additional }.to raise_exception( RuntimeError )
+      end
+    end
   end
 end
