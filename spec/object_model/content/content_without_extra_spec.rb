@@ -80,6 +80,56 @@ module SonJay
           [ 'detail_z',  subject['detail_z' ] ],
         ] )
       end
+
+      describe '#freeze' do
+        it "causes the instance to behave as frozen" do
+          subject.freeze
+          expect{ subject['aaa'] = 1 }.to raise_exception( RuntimeError )
+        end
+      end
+
+      describe '#dup' do
+        it "makes a shallow copy" do
+          subject[ 'aaa' ] = 'A'
+          subject[ 'bbb' ] = 'B'
+          actual_dup = subject.dup
+          expect( actual_dup[ 'aaa' ] ).to eq( 'A' )
+          expect( actual_dup[ 'bbb' ] ).to eq( 'B' )
+          expect( actual_dup[ 'detail_xy' ] ).to equal( subject[ 'detail_xy' ] )
+          expect( actual_dup[ 'detail_z'  ] ).to equal( subject[ 'detail_z'  ] )
+          actual_dup[ 'bbb' ] = 'BB'
+          expect( subject['bbb'] ).to eq( 'B' )
+        end
+
+        it "returns a thawed copy of a frozen instance" do
+          subject.freeze
+          actual_dup = subject.dup
+          expect( actual_dup ).not_to be_frozen
+          actual_dup['aaa'] = 99
+          expect( actual_dup['aaa'] ).to eq( 99 )
+        end
+      end
+
+      describe '#clone' do
+        it "makes a shallow copy" do
+          subject[ 'aaa' ] = 'A'
+          subject[ 'bbb' ] = 'B'
+          actual_clone = subject.clone
+          expect( actual_clone[ 'aaa' ] ).to eq( 'A' )
+          expect( actual_clone[ 'bbb' ] ).to eq( 'B' )
+          expect( actual_clone[ 'detail_xy' ] ).to equal( subject[ 'detail_xy' ] )
+          expect( actual_clone[ 'detail_z'  ] ).to equal( subject[ 'detail_z'  ] )
+          actual_clone[ 'bbb' ] = 'BB'
+          expect( subject['bbb'] ).to eq( 'B' )
+        end
+
+        it "returns a frozen copy of a frozen instance" do
+          subject.freeze
+          actual_clone = subject.clone
+          expect( actual_clone ).to be_frozen
+          expect{ subject['aaa'] = 1 }.to raise_exception( RuntimeError )
+        end
+      end
     end
 
     context "with value properties defined" do

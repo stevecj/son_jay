@@ -17,6 +17,27 @@ module SonJay
           end
         end
 
+        def freeze
+          super
+          @extra.freeze
+          self
+        end
+
+        def dup
+          new_copy = super
+          new_copy.instance_variable_set :@extra, @extra.dup if defined? @extra
+          new_copy
+        end
+
+        def clone
+          new_copy = super
+          if (defined? @extra) && (! new_copy.frozen?)
+            p new_copy.frozen?
+            new_copy.instance_variable_set :@extra, @extra.clone
+          end
+          new_copy
+        end
+
         private
 
         def load_extra_property(name_string, value)

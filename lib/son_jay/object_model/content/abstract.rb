@@ -70,6 +70,28 @@ module SonJay
           raise NotImplementedError, "Subclass responsibility"
         end
 
+        def freeze
+          super
+          @data.freeze
+          self
+        end
+
+        def dup
+          new_copy = super
+          new_copy.instance_variable_set :@data,             @data.dup
+          new_copy.instance_variable_set :@model_properties, @model_properties.dup
+          new_copy
+        end
+
+        def clone
+          new_copy = super
+          unless new_copy.frozen?
+            new_copy.instance_variable_set :@data,             @data.clone
+            new_copy.instance_variable_set :@model_properties, @model_properties.clone
+          end
+          new_copy
+        end
+
         private
 
         def init_properties(model_property_defs, value_property_defs)

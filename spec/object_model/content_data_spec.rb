@@ -54,7 +54,10 @@ describe SonJay::ObjectModel::ContentData do
 
     it "returns a thawed copy of a frozen instance" do
       subject.freeze
-      expect( subject.dup ).not_to be_frozen
+      actual_dup = subject.dup
+      expect( actual_dup ).not_to be_frozen
+      actual_dup['aa'] = 1
+      expect( actual_dup['aa'] ).to eq( 1 )
     end
   end
 
