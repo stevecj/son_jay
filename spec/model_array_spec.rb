@@ -68,6 +68,22 @@ describe SonJay::ModelArray do
         end
       end
 
+      describe "#to_a" do
+        it "returns an isolated array of the entries" do
+          entry_0 = subject.additional
+          entry_1 = subject.additional
+
+          actual_array = subject.to_a
+
+          entry_2 = subject.additional
+
+          expect( actual_array ).to eq( [
+            entry_0,
+            entry_1
+          ] )
+        end
+      end
+
       describe '#model_content' do
         it "returns the model array" do
           expect( subject.model_content ).to equal( subject )

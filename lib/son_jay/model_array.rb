@@ -84,5 +84,7 @@ module SonJay
       :zip
     ]
 
+    alias to_a entries
+
   end
 end
