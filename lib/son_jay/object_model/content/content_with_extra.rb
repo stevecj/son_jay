@@ -38,6 +38,12 @@ module SonJay
           new_copy
         end
 
+        def to_h
+          extra.empty? ?
+            @data.dup :
+            extra.hash_merge( @data )
+        end
+
         private
 
         def load_extra_property(name_string, value)

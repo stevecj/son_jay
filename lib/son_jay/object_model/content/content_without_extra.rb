@@ -14,6 +14,10 @@ module SonJay
           end
         end
 
+        def to_h
+          @data.dup
+        end
+
         private
 
         def load_extra_property(name_string, value)

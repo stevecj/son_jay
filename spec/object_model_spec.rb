@@ -201,6 +201,21 @@ describe SonJay::ObjectModel do
         expect( instance.detail_xy.yyy ).to eq('y')
         expect( instance.detail_z.zzz  ).to eq('z')
       end
+
+      it "can be explicitly, shallowly converted to an isolated hash" do
+        model_instance.aaa = 111
+        model_instance.bbb = 222
+
+        actual_hash = model_instance.to_h
+
+        model_instance.bbb = 999
+
+        expect( actual_hash.length ).to eq( 4 )
+        expect( actual_hash[ 'aaa' ] ).to eq( 111 )
+        expect( actual_hash[ 'bbb' ] ).to eq( 222 )
+        expect( actual_hash[ 'detail_xy' ] ).to equal( model_instance.detail_xy )
+        expect( actual_hash[ 'detail_z'  ] ).to equal( model_instance.detail_z  )
+      end
     end
 
     context "with extras allowed" do

@@ -22,6 +22,10 @@ module SonJay
       model_content.to_json( *args )
     end
 
+    def to_h
+      model_content.to_h
+    end
+
     def []=(name, value)
       name = self.class.property_definitions.name_from(name)
       target = property_store_for( name )
