@@ -10,6 +10,14 @@ module SonJay
       model_content
     end
 
+    def to_s
+      to_json
+    end
+
+    def inspect
+      "#<#{self.class.name} #{to_json}>"
+    end
+
     module ClassBehavior
 
       def parse_json(json)
