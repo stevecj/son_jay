@@ -1,3 +1,7 @@
+### 0.5.1
+* Enhancements
+  * Prettier #inspect output for instances of model classes
+
 ### 0.5.0
 * Enhancements
   * Allow subclassing/extending model classes
