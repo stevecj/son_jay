@@ -1,3 +1,8 @@
+### 0.5.2
+* Enhancements
+  * Subclasses can override declared object model methods and
+    can access the declarative behavior via super
+
 ### 0.5.1
 * Enhancements
   * Prettier #inspect output for instances of model classes
