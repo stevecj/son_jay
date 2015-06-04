@@ -153,6 +153,20 @@ describe SonJay::ObjectModel do
       expect( instance.detail_z.zzz  ).to eq('z')
     end
 
+    it "allows declared methods to be overridden in subclasses" do
+      subclass = Class.new(model_class) do
+        def aaa=(value) ; super "<#{value}>" ; end
+        def bbb         ; "[#{super}]"       ; end
+      end
+      subinst = subclass.new
+
+      subinst.aaa =                  'abc'
+      subinst.model_content['bbb'] = 'xyz'
+
+      expect( subinst.model_content['aaa'] ).to eq('<abc>')
+      expect( subinst.bbb                  ).to eq('[xyz]')
+    end
+
     context "with more properties added via an additional ::properies block" do
       before do
 

@@ -107,12 +107,22 @@ module SonJay
       def _apply_property_definitions(definitions)
         definitions.each do |d|
           name = d.name
-          class_eval <<-CODE
+          property_defs_module.module_eval <<-CODE
             def #{name}         ; model_content[#{name.inspect}]         ; end
             def #{name}=(value) ; model_content[#{name.inspect}] = value ; end
           CODE
         end
       end
+
+      def property_defs_module
+        @property_defs_module ||= begin
+          Module.new.tap do |mod|
+            const_set :HasPropertyAccessors, mod
+            include mod
+          end
+        end
+      end
+
 
       def _validate_model_dependencies!(dependants=Set.new)
         raise InfiniteRegressError if dependants.include?(self)
